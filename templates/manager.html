@@ -171,7 +171,7 @@
     <div class="container">
         <div class="overview-section card">
             <div class="overview-header">
-                <h2 class="overview-title">概览</h2>
+                <h2 class="overview-title">添加 SSO Token</h2>
                 <div class="overview-actions">
                     <button class="btn btn-base" id="batchDeleteTokens" aria-label="批量删除选中的 Token">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -190,75 +190,15 @@
                     </button>
                 </div>
             </div>
-            <div class="overview-grid">
-                <div class="overview-card" data-tooltip="总共管理的Token数量">
-                    <div class="overview-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
-                            <rect x="8" y="2" width="8" height="4" rx="1"/>
-                        </svg>
-                    </div>
-                    <div class="overview-content">
-                        <span class="overview-label">Token 总数</span>
-                        <span class="overview-value" id="totalTokens">0</span>
-                    </div>
-                </div>
-                <div class="overview-card" data-tooltip="grok-2 模型剩余可用次数">
-                    <div class="overview-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M12 2v20M2 12h20"/>
-                        </svg>
-                    </div>
-                    <div class="overview-content">
-                        <span class="overview-label">grok-2</span>
-                        <span class="overview-value" id="grok-2-count">0</span>
-                    </div>
-                </div>
-                <div class="overview-card" data-tooltip="grok-3 模型剩余可用次数">
-                    <div class="overview-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"/>
-                            <path d="M12 2v4M12 18v4"/>
-                        </svg>
-                    </div>
-                    <div class="overview-content">
-                        <span class="overview-label">grok-3</span>
-                        <span class="overview-value" id="grok-3-count">0</span>
-                    </div>
-                </div>
-                <div class="overview-card" data-tooltip="grok-3-deepsearch 模型剩余可用次数">
-                    <div class="overview-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="11" cy="11" r="8"/>
-                            <path d="M21 21l-4.35-4.35"/>
-                        </svg>
-                    </div>
-                    <div class="overview-content">
-                        <span class="overview-label">grok-3-deepsearch</span>
-                        <span class="overview-value" id="grok-3-deepsearch-count">0</span>
-                    </div>
-                </div>
-                <div class="overview-card" data-tooltip="grok-3-deepersearch 模型剩余可用次数">
-                    <div class="overview-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="11" cy="11" r="8"/>
-                            <path d="M21 21l-4.35-4.35"/>
-                        </svg>
-                    </div>
-                    <div class="overview-content">
-                        <span class="overview-label">grok-3-deepersearch</span>
-                        <span class="overview-value" id="grok-3-deepersearch-count">0</span>
-                    </div>
-                </div>                
-                <div class="overview-card" data-tooltip="grok-3-reasoning 模型剩余可用次数">
-                    <div class="overview-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M12 2a10 10 0 0 0-10 10c0 5 8 13 10 13s10-8 10-13a10 10 0 0 0-10-10z"/>
-                        </svg>
-                    </div>
-                    <div class="overview-content">
-                        <span class="overview-label">grok-3-reasoning</span>
-                        <span class="overview-value" id="grok-3-reasoning-count">0</span>
+            <div class="token-manage-grid">
+                <div style="grid-column: 1 / -1;">
+                    <h4 style="margin-bottom: 0.75rem;">批量添加 SSO Token</h4>
+                    <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                        <textarea class="input-field" id="batchTokenInput" placeholder="输入多个 SSO Token，一行一个" aria-label="输入多个 SSO Token，一行一个" rows="6" style="resize: vertical; min-height: 120px; font-family: monospace;"></textarea>
+                        <div class="input-group">
+                            <button class="btn btn-base" id="addBatchTokenBtn" aria-label="批量添加 SSO Token">批量添加</button>
+                            <button class="btn btn-base" id="clearTokenInputBtn" aria-label="清空输入框">清空</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -267,39 +207,6 @@
         <div class="card">
             <h3>Token 管理</h3>
             <div class="token-manage-grid">
-                <div>
-                    <h4 style="margin-bottom: 0.75rem;">添加单个 SSO Token</h4>
-                    <div class="input-group">
-                        <input type="text" class="input-field" id="singleTokenInput" placeholder="输入单个 SSO Token" aria-label="输入单个 SSO Token">
-                        <button class="btn btn-base" id="addSingleTokenBtn" aria-label="添加单个 SSO Token">添加</button>
-                    </div>
-                </div>
-                <div>
-                    <h4 style="margin-bottom: 0.75rem;">设置 CF Clearance</h4>
-                    <div class="input-group">
-                        <input type="text" class="input-field" id="cfInput" placeholder="输入 CF Clearance" aria-label="输入 CF Clearance">
-                        <button class="btn btn-base" id="setCfBtn" aria-label="设置 CF Clearance">设置</button>
-                    </div>
-                </div>
-                <div>
-                    <h4 style="margin-bottom: 0.75rem;">批量添加 SSO Token</h4>
-                    <div class="input-group">
-                        <input type="text" class="input-field" id="batchTokenInput" placeholder="输入多个 SSO Token（用逗号隔开，如 ey1,ey2）" aria-label="输入多个 SSO Token">
-                        <button class="btn btn-base" id="addBatchTokenBtn" aria-label="批量添加 SSO Token">添加</button>
-                    </div>
-                </div>
-                <div>
-                    <h4 style="margin-bottom: 0.75rem;">检测模型可用性</h4>
-                    <div class="input-group">
-                        <select class="input-field" id="modelSelect" style="width: 150px;" aria-label="选择要检测的模型">
-                            <option value="grok-2">grok-2</option>
-                            <option value="grok-3" selected>grok-3</option>
-                            <option value="grok-3-reasoning">grok-3-reasoning</option>
-                            <option value="grok-3-deepsearch">grok-3-deepsearch</option>
-                        </select>
-                        <button class="btn btn-base" id="testAvailabilityBtn" aria-label="检测模型可用性">检测</button>
-                    </div>
-                </div>
                 <div>
                     <h4 style="margin-bottom: 0.75rem;">Base URL</h4>
                     <div class="input-group">
@@ -342,9 +249,6 @@
     <script>
         var modelConfig = {
             "grok-3": { RequestFrequency: 20, ExpirationTime: 7200000 },
-            "grok-3-deepsearch": { RequestFrequency: 10, ExpirationTime: 86400000 },
-            "grok-3-deepersearch": { RequestFrequency: 3, ExpirationTime: 86400000 },
-            "grok-3-reasoning": { RequestFrequency: 10, ExpirationTime: 86400000 },
             "grok-4": { RequestFrequency: 20, ExpirationTime: 7200000 }
         };
 
@@ -354,95 +258,13 @@
         let currentPage = 1;
         const itemsPerPage = 30;
 
-        function getProgressColor(percentage, isValid) {
-            if (!isValid) return '#94A3B8';
-            if (percentage > 70) return 'var(--progress-fill-danger)';
-            if (percentage > 30) return 'var(--progress-fill-warning)';
-            return 'var(--progress-fill-success)';
-        }
-
         function calculateModelRemaining() {
-            const modelRemaining = {};
-            Object.keys(modelConfig).forEach(modelName => {
-                var maxRequests = modelConfig[modelName].RequestFrequency;
-                modelRemaining[modelName] = 0;
-                Object.values(tokenMap).forEach(tokenData => {
-                    const modelData = tokenData[modelName];
-                    if(modelData){
-                        if (!modelData.isSuper) {
-                            modelRemaining[modelName] = 0;
-                        }
-                        else if (modelData.isValid) {
-                            modelRemaining[modelName] += maxRequests - modelData.totalRequestCount;
-                        }
-                    }
-                });
-            });
-            return modelRemaining;
+            return {};
         }
 
-        function updateTokenCounters() {
-            const totalTokensElement = document.getElementById('totalTokens');
-            if (totalTokensElement) {
-                totalTokensElement.textContent = Object.keys(tokenMap).length;
-            } else {
-                console.warn('Element with ID "totalTokens" not found.');
-            }
-
-            const modelRemaining = calculateModelRemaining();
-            const modelIds = ['grok-3', 'grok-3-deepsearch', 'grok-3-deepersearch', 'grok-3-reasoning','grok-4'];
-            modelIds.forEach(modelName => {
-                const countElement = document.getElementById(`${modelName}-count`);
-                if (countElement) {
-                    countElement.textContent = modelRemaining[modelName] || 0;
-                } else {
-                    console.warn(`Element with ID "${modelName}-count" not found.`);
-                }
-            });
-        }
-
-        async function updateExpiredTokenTimers() {
-            const currentTime = Date.now();
-            if (currentTime - lastUpdateTime < 5000) return;
-
-            let shouldRefresh = false;
-            Object.values(tokenMap).forEach(tokenData => {
-                Object.entries(tokenData).forEach(([modelName, modelData]) => {
-                    if (!modelData.isValid) {
-                        if(modelData.isSuper){
-                            ExpirationTime = 3 * 60 * 60 * 1000;
-                        }else{
-                            ExpirationTime = modelConfig[modelName].ExpirationTime;
-                        }
-                        const recoveryTime = modelData.invalidatedTime + ExpirationTime;
-                        if (recoveryTime <= currentTime) {
-                            shouldRefresh = true;
-                        }
-                    }
-                });
-            });
-
-            if (shouldRefresh) {
-                lastUpdateTime = currentTime;
-                await fetchTokenMap();
-                showNotification('Token 状态已自动更新');
-            } else {
-                renderTokenDiff(tokenMap);
-            }
-        }
-
-        function getTooltipText(invalidatedTime, expirationTime) {
-            const currentTime = Date.now();
-            const recoveryTime = invalidatedTime + expirationTime;
-            const remainingTime = recoveryTime - currentTime;
-            if (remainingTime > 0) {
-                const minutes = Math.floor(remainingTime / 60000);
-                const seconds = Math.floor((remainingTime % 60000) / 1000);
-                return `${minutes}分${seconds}秒后恢复`;
-            }
-            return '已可恢复';
-        }
-
+        
+        
+        
         function createTokenCard(token, tokenData) {
             const tokenCard = document.createElement('div');
             tokenCard.className = 'token-card';
@@ -518,74 +340,12 @@
                 modelNameSpan.className = 'model-name';
                 modelNameSpan.textContent = modelName;
 
-                const progressContainer = document.createElement('div');
-                progressContainer.className = 'progress-container';
-
-                const progressBar = document.createElement('div');
-                progressBar.className = 'progress-bar';
-                const progressFill = document.createElement('div');
-                progressFill.className = 'progress-fill';
-
-                const modelData = tokenData[modelName];
-                if(!modelData) return;
-                const isSuper = modelData.isSuper;
-                let requestCount = modelData.totalRequestCount;
-                let maxRequests = config.RequestFrequency;
-                if (isSuper) {
-                    switch (modelName) {
-                        case "grok-3":
-                            maxRequests = 100;
-                            break;
-                        case "grok-3-deepsearch":
-                            maxRequests = 30;
-                            break;
-                        case "grok-3-deepersearch":
-                            maxRequests = 10;
-                            break;
-                        case "grok-3-reasoning":
-                            maxRequests = 30;
-                            break;
-                        case "grok-4":
-                            maxRequests = 20;
-                    }
-                }
-                const percentage = Math.min((requestCount / maxRequests) * 100, 100);
-                
-                progressFill.style.width = `${percentage}%`;
-                progressFill.style.backgroundColor = getProgressColor(percentage, modelData.isValid);
-                progressBar.appendChild(progressFill);
-
-                const progressText = document.createElement('div');
-                progressText.className = 'progress-text';
-                progressText.textContent = `${requestCount}/${maxRequests}`;
-
                 const status = document.createElement('div');
-                status.className = 'status';
-                if (!modelData.isValid) {
-                    if(modelData.isSuper){
-                            ExpirationTime = 3 * 60 * 60 * 1000;
-                    }
-                    else{
-                            ExpirationTime = config.ExpirationTime;
-                    }
-                    status.classList.add('status-expired');
-                    status.textContent = '失效';
-                    status.setAttribute('data-invalidated-time', modelData.invalidatedTime);
-                    status.setAttribute('data-expiration-time', ExpirationTime);
-                    const tooltip = document.createElement('div');
-                    tooltip.className = 'tooltip';
-                    tooltip.textContent = getTooltipText(modelData.invalidatedTime, ExpirationTime);
-                    status.appendChild(tooltip);
-                } else {
-                    status.classList.add('status-active');
-                    status.textContent = '活跃';
-                }
-
-                progressContainer.appendChild(progressBar);
-                progressContainer.appendChild(progressText);
+                status.className = 'status status-active';
+                status.textContent = '活跃';
 
                 modelItem.appendChild(modelNameSpan);
-                modelItem.appendChild(progressContainer);
+                modelItem.appendChild(document.createElement('div'));
                 modelItem.appendChild(status);
                 modelList.appendChild(modelItem);
             });
@@ -598,66 +358,6 @@
 
         function updateTokenCard(token, tokenData) {
             const tokenCard = document.querySelector(`[data-token="${token}"]`);
-            const modelItems = tokenCard.querySelectorAll('.model-item');
-            let index = 0;
-            Object.entries(modelConfig).forEach(([modelName, config]) => {
-                const modelItem = modelItems[index++];
-                const modelData = tokenData[modelName];
-                if(!modelData) return;
-                const isSuper = modelData.isSuper;
-                let requestCount = modelData.totalRequestCount;
-                let maxRequests = config.RequestFrequency;
-                if (isSuper) {
-                    switch (modelName) {
-                        case "grok-3":
-                            maxRequests = 100;
-                            break;
-                        case "grok-3-deepsearch":
-                            maxRequests = 30;
-                            break;
-                        case "grok-3-deepersearch":
-                            maxRequests = 10;
-                            break;
-                        case "grok-3-reasoning":
-                            maxRequests = 30;
-                            break;
-                        case "grok-4":
-                            maxRequests = 20;
-                    }
-                }
-                const percentage = Math.min((requestCount / maxRequests) * 100, 100);
-
-                const progressFill = modelItem.querySelector('.progress-fill');
-                progressFill.style.width = `${percentage}%`;
-                progressFill.style.backgroundColor = getProgressColor(percentage, modelData.isValid);
-
-                const progressText = modelItem.querySelector('.progress-text');
-                progressText.textContent = `${requestCount}/${maxRequests}`;
-
-                const status = modelItem.querySelector('.status');
-                status.className = 'status';
-                if (!modelData.isValid) {
-                    if(modelData.isSuper){
-                            ExpirationTime = 3 * 60 * 60 * 1000;
-                    }
-                    else{
-                            ExpirationTime = config.ExpirationTime;
-                    }
-                    status.classList.add('status-expired');
-                    status.textContent = '失效';
-                    status.setAttribute('data-invalidated-time', modelData.invalidatedTime);
-                    status.setAttribute('data-expiration-time', ExpirationTime);
-                    const tooltip = status.querySelector('.tooltip') || document.createElement('div');
-                    tooltip.className = 'tooltip';
-                    tooltip.textContent = getTooltipText(modelData.invalidatedTime, ExpirationTime);
-                    if (!status.contains(tooltip)) status.appendChild(tooltip);
-                } else {
-                    status.classList.add('status-active');
-                    status.textContent = '活跃';
-                    const tooltip = status.querySelector('.tooltip');
-                    if (tooltip) tooltip.remove();
-                }
-            });
             const checkbox = tokenCard.querySelector('.token-checkbox');
             checkbox.className = `token-checkbox ${batchDeleteMode ? 'show' : ''}`;
         }
@@ -695,8 +395,7 @@
                 }
             });
 
-            updateTokenCounters();
-            renderPagination(totalPages);
+                        renderPagination(totalPages);
         }
 
         function filterTokensArray(tokenEntries) {
@@ -821,42 +520,14 @@
                 });
             }
 
-            const addSingleTokenBtn = document.getElementById('addSingleTokenBtn');
-            if (addSingleTokenBtn) {
-                addSingleTokenBtn.addEventListener('click', async () => {
-                    const tokenInput = document.getElementById('singleTokenInput');
-                    const tokenText = tokenInput.value.trim();
-                    if (tokenText) {
-                        try {
-                            const baseUrl = document.getElementById('baseUrl').value;
-                            const response = await fetch(`${baseUrl}/manager/api/add`, {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ sso: tokenText })
-                            });
-                            if (response.ok) {
-                                tokenInput.value = '';
-                                await fetchTokenMap();
-                                showNotification('Token 添加成功');
-                            } else {
-                                showNotification('添加 Token 失败');
-                            }
-                        } catch (error) {
-                            showNotification('添加 Token 出错');
-                        }
-                    } else {
-                        showNotification('请输入 Token');
-                    }
-                });
-            }
-
+            
             const addBatchTokenBtn = document.getElementById('addBatchTokenBtn');
             if (addBatchTokenBtn) {
                 addBatchTokenBtn.addEventListener('click', async () => {
                     const tokenInput = document.getElementById('batchTokenInput');
                     const tokenText = tokenInput.value.trim();
                     if (tokenText) {
-                        const tokens = tokenText.split(',').map(t => t.trim()).filter(t => t.length > 0);
+                        const tokens = tokenText.split('\n').map(t => t.trim()).filter(t => t.length > 0);
                         if (tokens.length === 0) {
                             showNotification('请输入至少一个有效的 Token');
                             return;
@@ -895,70 +566,16 @@
                 });
             }
 
-            const setCfBtn = document.getElementById('setCfBtn');
-            if (setCfBtn) {
-                setCfBtn.addEventListener('click', async () => {
-                    const cfInput = document.getElementById('cfInput');
-                    const newCf = cfInput.value.trim();
-                    if (newCf) {
-                        try {
-                            const baseUrl = document.getElementById('baseUrl').value;
-                            const response = await fetch(`${baseUrl}/manager/api/cf_clearance`, {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ cf_clearance: newCf })
-                            });
-                            if (response.ok) {
-                                cfInput.value = '';
-                                showNotification('CF Clearance 设置成功');
-                            } else {
-                                showNotification('设置 CF Clearance 失败');
-                            }
-                        } catch (error) {
-                            showNotification('设置 CF Clearance 出错');
-                        }
-                    }
+            const clearTokenInputBtn = document.getElementById('clearTokenInputBtn');
+            if (clearTokenInputBtn) {
+                clearTokenInputBtn.addEventListener('click', () => {
+                    const tokenInput = document.getElementById('batchTokenInput');
+                    tokenInput.value = '';
+                    showNotification('输入框已清空');
                 });
             }
 
-            const testAvailabilityBtn = document.getElementById('testAvailabilityBtn');
-            if (testAvailabilityBtn) {
-                testAvailabilityBtn.addEventListener('click', async () => {
-                    const selectedModel = document.getElementById('modelSelect').value;
-                    const baseUrl = document.getElementById('baseUrl').value;
-                    const apiKey = document.getElementById('apiKey').value.trim();
-                    const apiUrl = `${baseUrl}/v1/chat/completions`;
-                    try {
-                        const response = await fetch(apiUrl, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Authorization': `Bearer ${apiKey}`
-                            },
-                            body: JSON.stringify({
-                                model: selectedModel,
-                                messages: [{ role: 'user', content: 'Hello' }],
-                                max_tokens: 10
-                            })
-                        });
-                        if (response.ok) {
-                            const data = await response.json();
-                            if (data.choices && data.choices.length > 0) {
-                                showNotification(`${selectedModel} 模型可用`);
-                            } else {
-                                showNotification(`${selectedModel} 模型不可用`);
-                            }
-                        } else {
-                            const errorText = await response.text();
-                            showNotification(`${selectedModel} 模型不可用（错误: ${response.status} - ${errorText}）`);
-                        }
-                    } catch (error) {
-                        console.error('检测模型出错:', error);
-                        showNotification(`检测 ${selectedModel} 失败，请检查网络或接口`);
-                    }
-                });
-            }
-
+            
             const batchDeleteTokens = document.getElementById('batchDeleteTokens');
             if (batchDeleteTokens) {
                 batchDeleteTokens.addEventListener('click', async () => {
@@ -1052,15 +669,6 @@
             }
 
             fetchTokenMap(); // 页面加载时获取 Token
-
-            let timer = setInterval(updateExpiredTokenTimers, 60000);
-            document.addEventListener('visibilitychange', () => {
-                if (document.hidden) {
-                    clearInterval(timer);
-                } else {
-                    timer = setInterval(updateExpiredTokenTimers, 60000);
-                }
-            });
         });
 
         function showNotification(message) {

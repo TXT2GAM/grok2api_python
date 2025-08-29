@@ -2,13 +2,21 @@ FROM python:3.10-slim
 
 WORKDIR /app
 
-RUN pip install --no-cache-dir flask requests curl_cffi werkzeug loguru 
+# 复制依赖文件并安装
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-VOLUME ["/data"]
 
+# 复制应用代码
 COPY . .
 
-ENV PORT=3000
-EXPOSE 3000
+# 暴露端口
+EXPOSE 5200
 
+# 设置环境变量
+ENV PORT=5200
+ENV PYTHONPATH=/app
+
+
+# 启动命令
 CMD ["python", "app.py"]
