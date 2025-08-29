@@ -1,4 +1,5 @@
 import json
+import time
 from flask import stream_with_context, Response, jsonify
 from curl_cffi import requests as curl_requests
 from logger import logger
@@ -53,11 +54,39 @@ class RequestHandler:
         try:
             logger.info("开始处理非流式响应", "Server")
             
-            # 直接返回原始响应内容
-            return response.content.decode('utf-8')
+            # 解析原始响应
+            grok_response = response.json()
+            
+            # 提取token
+            token = MessageProcessor.process_model_response(grok_response, model)
+            
+            # 构建OpenAI兼容格式响应
+            openai_response = {
+                "id": f"chatcmpl-{int(time.time())}",
+                "object": "chat.completion",
+                "created": int(time.time()),
+                "model": model,
+                "choices": [
+                    {
+                        "index": 0,
+                        "message": {
+                            "role": "assistant",
+                            "content": grok_response.get("response", "")
+                        },
+                        "finish_reason": "stop"
+                    }
+                ],
+                "usage": {
+                    "prompt_tokens": 0,
+                    "completion_tokens": 0,
+                    "total_tokens": 0
+                }
+            }
+            
+            return openai_response
             
         except Exception as error:
-            logger.error(str(error), "Server")
+            logger.error(f"处理非流式响应时出错: {str(error)}", "Server")
             raise
 
     def handle_stream_response(self, response, model):
@@ -121,14 +150,7 @@ class RequestHandler:
                                 content_type='text/event-stream'
                             )
                         else:
-                            content = self.handle_non_stream_response(response, model)
-                            # 直接返回原始GroK响应，不进行格式化
-                            if content.startswith('{') and content.endswith('}'):
-                                # 如果是JSON格式，直接返回
-                                return jsonify(json.loads(content))
-                            else:
-                                # 如果不是JSON，直接返回原始内容
-                                return content
+                            return self.handle_non_stream_response(response, model)
                             
                     elif response.status_code == 403:
                         response_status_code = 403
