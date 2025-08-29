@@ -93,17 +93,36 @@ class RequestHandler:
         def generate():
             logger.info("开始处理流式响应", "Server")
             
-            # 直接透传流式响应
-            try:
-                for chunk in response.iter_lines():
-                    if not chunk:
+            stream = response.iter_lines()
+            
+            for chunk in stream:
+                if not chunk:
+                    continue
+                try:
+                    line_json = json.loads(chunk.decode("utf-8").strip())
+                    
+                    if line_json.get("error"):
+                        logger.error(json.dumps(line_json, indent=2), "Server")
+                        yield json.dumps({"error": "RateLimitError"}) + "\n\n"
+                        return
+                        
+                    response_data = line_json.get("result", {}).get("response")
+                    if not response_data:
                         continue
-                    # 直接返回原始行，不做任何处理
-                    yield chunk.decode('utf-8') + '\n'
-            except Exception as e:
-                logger.error(f"处理流式响应时出错: {str(e)}", "Server")
-                yield f"event: error\ndata: {json.dumps({'error': str(e)})}\n\n"
-        
+                        
+                    result = MessageProcessor.process_model_response(response_data, model)
+                    
+                    if result["token"]:
+                        yield f"data: {json.dumps(MessageProcessor.create_chat_response(result['token'], model, True))}\n\n"
+                        
+                except json.JSONDecodeError:
+                    continue
+                except Exception as e:
+                    logger.error(f"处理流式响应行时出错: {str(e)}", "Server")
+                    continue
+                    
+            yield "data: [DONE]\n\n"
+            
         return generate()
 
     def make_grok_request(self, data, model, stream=False):
@@ -150,7 +169,8 @@ class RequestHandler:
                                 content_type='text/event-stream'
                             )
                         else:
-                            return self.handle_non_stream_response(response, model)
+                                content = self.handle_non_stream_response(response, model)
+                                return MessageProcessor.create_chat_response(content, model)
                             
                     elif response.status_code == 403:
                         response_status_code = 403
