@@ -98,7 +98,8 @@ class MessageProcessor:
         if not conversation.strip():
             raise ValueError('消息内容为空!')
         
-        return {
+        # 基础请求结构
+        base_request = {
             "temporary": config_manager.get("API.IS_TEMP_CONVERSATION", False),
             "modelName": model,
             "message": conversation,
@@ -126,6 +127,41 @@ class MessageProcessor:
             "isReasoning": config_manager.is_reasoning_model(model),
             "disableTextFollowUps": True
         }
+        
+        # 为 grok-4 添加特殊字段
+        if model == "grok-4":
+            grok4_request = {
+                **base_request,
+                "disableSearch": False,
+                "enableImageGeneration": True,
+                "imageGenerationCount": 2,
+                "forceConcise": False,
+                "toolOverrides": {},
+                "enableSideBySide": True,
+                "sendFinalMetadata": True,
+                "customPersonality": "",
+                "isReasoning": False,
+                "webpageUrls": [],
+                "metadata": {
+                    "requestModelDetails": {
+                        "modelId": "grok-4"
+                    }
+                },
+                "disableTextFollowUps": True,
+                "isFromGrokFiles": False,
+                "disableMemory": False,
+                "forceSideBySide": False,
+                "modelMode": "MODEL_MODE_EXPERT",
+                "isAsyncChat": False,
+                "supportedFastTools": {
+                    "calculatorTool": "1",
+                    "unitConversionTool": "1"
+                },
+                "isRegenRequest": False
+            }
+            return grok4_request
+        
+        return base_request
     
     @staticmethod
     def process_model_response(response, model):

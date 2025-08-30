@@ -52,15 +52,76 @@ class RequestHandler:
 
     def handle_non_stream_response(self, response, model):
         try:
-            logger.info("开始处理非流式响应", "Server")
+            logger.info("开始处理非流式响应（拼接流式内容）", "Server")
             
-            # 解析原始响应
-            grok_response = response.json()
+            # 解析流式响应的所有行，拼接完整内容和思考内容
+            stream = response.iter_lines()
+            full_content = ""
+            thinking_content = ""
+            model_response = None
             
-            # 提取token
-            token = MessageProcessor.process_model_response(grok_response, model)
+            for chunk in stream:
+                if not chunk:
+                    continue
+                try:
+                    line_json = json.loads(chunk.decode("utf-8").strip())
+                    
+                    if line_json.get("error"):
+                        logger.error(json.dumps(line_json, indent=2), "Server")
+                        raise ValueError("RateLimitError")
+                        
+                    response_data = line_json.get("result", {}).get("response")
+                    if not response_data:
+                        continue
+                    
+                    # 处理 grok-4 的思考内容
+                    if model == "grok-4":
+                        # 收集思考内容 (isThinking: true)
+                        if response_data.get("isThinking") and response_data.get("token"):
+                            thinking_content += response_data["token"]
+                        
+                        # 收集最终内容 (isThinking: false, messageTag: "final")
+                        elif not response_data.get("isThinking") and response_data.get("messageTag") == "final" and response_data.get("token"):
+                            full_content += response_data["token"]
+                    
+                    # 处理 grok-3 和其他模型
+                    else:
+                        # 获取token并拼接内容
+                        token = response_data.get("token", "")
+                        if token:
+                            full_content += token
+                    
+                    # 检查是否有最终响应（modelResponse）
+                    if response_data.get("modelResponse"):
+                        model_response = response_data["modelResponse"]
+                        break
+                        
+                except json.JSONDecodeError:
+                    continue
+                except Exception as e:
+                    logger.error(f"处理非流式响应行时出错: {str(e)}", "Server")
+                    continue
             
-            # 构建OpenAI兼容格式响应
+            # 如果有 modelResponse，优先使用它的内容
+            if model_response:
+                if model == "grok-4" and model_response.get("thinkingTrace"):
+                    # 对于 grok-4，将思考内容包装在 think 标签中
+                    thinking_trace = model_response["thinkingTrace"]
+                    final_message = f"<think>{thinking_trace}</think>{model_response.get('message', '')}"
+                else:
+                    final_message = model_response.get('message', '')
+            else:
+                # 如果没有 modelResponse，手动拼接内容
+                if model == "grok-4" and thinking_content:
+                    final_message = f"<think>{thinking_content}</think>{full_content}"
+                else:
+                    final_message = full_content
+            
+            if not final_message:
+                logger.warning("未找到响应内容", "Server")
+                final_message = ""
+            
+            # 构建标准OpenAI兼容格式响应
             openai_response = {
                 "id": f"chatcmpl-{int(time.time())}",
                 "object": "chat.completion",
@@ -71,7 +132,7 @@ class RequestHandler:
                         "index": 0,
                         "message": {
                             "role": "assistant",
-                            "content": grok_response.get("response", "")
+                            "content": final_message
                         },
                         "finish_reason": "stop"
                     }
@@ -83,6 +144,7 @@ class RequestHandler:
                 }
             }
             
+            logger.info(f"成功构建OpenAI响应，内容长度: {len(final_message)}", "Server")
             return openai_response
             
         except Exception as error:
@@ -94,6 +156,8 @@ class RequestHandler:
             logger.info("开始处理流式响应", "Server")
             
             stream = response.iter_lines()
+            thinking_started = False
+            thinking_content = ""
             
             for chunk in stream:
                 if not chunk:
@@ -109,11 +173,37 @@ class RequestHandler:
                     response_data = line_json.get("result", {}).get("response")
                     if not response_data:
                         continue
-                        
-                    result = MessageProcessor.process_model_response(response_data, model)
                     
-                    if result["token"]:
-                        yield f"data: {json.dumps(MessageProcessor.create_chat_response(result['token'], model, True))}\n\n"
+                    # 处理 grok-4 的特殊流式响应
+                    if model == "grok-4":
+                        # 处理思考内容的开始
+                        if response_data.get("isThinking") and not thinking_started:
+                            thinking_started = True
+                            # 发送开始思考标签
+                            yield f"data: {json.dumps(MessageProcessor.create_chat_response('<think>', model, True))}\n\n"
+                        
+                        # 处理思考内容
+                        if response_data.get("isThinking") and response_data.get("token"):
+                            thinking_content += response_data["token"]
+                            yield f"data: {json.dumps(MessageProcessor.create_chat_response(response_data['token'], model, True))}\n\n"
+                        
+                        # 处理思考结束和最终内容开始
+                        elif not response_data.get("isThinking") and thinking_started and response_data.get("messageTag") == "final" and response_data.get("token"):
+                            # 发送结束思考标签
+                            yield f"data: {json.dumps(MessageProcessor.create_chat_response('</think>', model, True))}\n\n"
+                            thinking_started = False
+                            # 发送最终内容
+                            yield f"data: {json.dumps(MessageProcessor.create_chat_response(response_data['token'], model, True))}\n\n"
+                        
+                        # 处理最终内容的后续部分
+                        elif not response_data.get("isThinking") and not thinking_started and response_data.get("messageTag") == "final" and response_data.get("token"):
+                            yield f"data: {json.dumps(MessageProcessor.create_chat_response(response_data['token'], model, True))}\n\n"
+                    
+                    # 处理 grok-3 和其他模型
+                    else:
+                        result = MessageProcessor.process_model_response(response_data, model)
+                        if result["token"]:
+                            yield f"data: {json.dumps(MessageProcessor.create_chat_response(result['token'], model, True))}\n\n"
                         
                 except json.JSONDecodeError:
                     continue
@@ -169,8 +259,7 @@ class RequestHandler:
                                 content_type='text/event-stream'
                             )
                         else:
-                                content = self.handle_non_stream_response(response, model)
-                                return MessageProcessor.create_chat_response(content, model)
+                                return self.handle_non_stream_response(response, model)
                             
                     elif response.status_code == 403:
                         response_status_code = 403
