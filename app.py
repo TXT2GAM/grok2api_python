@@ -50,7 +50,13 @@ def add_manager_token():
         if not sso:
             return jsonify({"error": "SSO token is required"}), 400
         
-        token_str = f"sso-rw={sso};sso={sso}"
+        # 如果输入的是完整的cookie字符串，直接使用
+        if 'sso=' in sso and 'sso-rw=' in sso:
+            token_str = sso
+        else:
+            # 如果只是cookie值，构造完整的cookie字符串
+            token_str = f"sso-rw={sso};sso={sso}"
+            
         token_manager.add_token(token_str)
         return jsonify({"success": True})
     except Exception as e:
@@ -64,11 +70,56 @@ def delete_manager_token():
         if not sso:
             return jsonify({"error": "SSO token is required"}), 400
         
-        token_str = f"sso-rw={sso};sso={sso}"
-        token_manager.delete_token(token_str)
+        # 直接删除传入的完整cookie字符串
+        token_manager.delete_token(sso)
         return jsonify({"success": True})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
+@app.route('/manager/api/test', methods=['POST'])
+def test_manager_token():
+    try:
+        cookie = request.json.get('cookie')
+        if not cookie:
+            return jsonify({"error": "Cookie is required"}), 400
+        
+        # 构造测试请求数据
+        test_data = {
+            "model": "grok-3",
+            "messages": [{"role": "user", "content": "hi"}],
+            "stream": False
+        }
+        
+        # 临时设置token进行测试
+        original_tokens = token_manager.get_all_tokens()
+        token_manager.tokens = [cookie]  # 临时替换为测试cookie
+        token_manager.current_index = 0
+        token_manager.last_round_index = -1
+        
+        try:
+            # 发送测试请求
+            response = request_handler.make_grok_request(test_data, "grok-3", False)
+            
+            # 恢复原始tokens
+            token_manager.tokens = original_tokens
+            token_manager.current_index = 0 
+            token_manager.last_round_index = -1
+            
+            if response and isinstance(response, dict) and 'choices' in response:
+                return jsonify({"success": True, "message": "Cookie测试成功"})
+            else:
+                return jsonify({"success": False, "error": "响应格式异常"})
+                
+        except Exception as test_error:
+            # 恢复原始tokens
+            token_manager.tokens = original_tokens
+            token_manager.current_index = 0
+            token_manager.last_round_index = -1
+            return jsonify({"success": False, "error": str(test_error)})
+            
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
 
 
 @app.route('/get/tokens', methods=['GET'])

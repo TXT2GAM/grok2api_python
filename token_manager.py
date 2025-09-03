@@ -67,18 +67,6 @@ class AuthTokenManager:
         
         return token
 
-    def remove_failed_token(self, token):
-        if isinstance(token, dict):
-            token = token.get("token", "")
-            
-        if token in self.tokens:
-            self.tokens.remove(token)
-            # 重置轮询状态以避免索引越界
-            self.current_index = 0
-            self.last_round_index = -1
-            logger.info(f"已移除失效令牌: {token[:20]}...", "TokenManager")
-            return True
-        return False
 
     def get_all_tokens(self):
         return self.tokens.copy()

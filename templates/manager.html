@@ -3,201 +3,458 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GrokAPI管理面板</title>
-    <style type="text/css">@font-face {font-family:Inter;font-style:normal;font-weight:300;src:url(/cf-fonts/v/inter/5.0.16/vietnamese/wght/normal.woff2);unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:300;src:url(/cf-fonts/v/inter/5.0.16/cyrillic/wght/normal.woff2);unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:300;src:url(/cf-fonts/v/inter/5.0.16/greek-ext/wght/normal.woff2);unicode-range:U+1F00-1FFF;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:300;src:url(/cf-fonts/v/inter/5.0.16/cyrillic-ext/wght/normal.woff2);unicode-range:U+0460-052F,U+1C80-1C88,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:300;src:url(/cf-fonts/v/inter/5.0.16/greek/wght/normal.woff2);unicode-range:U+0370-03FF;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:300;src:url(/cf-fonts/v/inter/5.0.16/latin/wght/normal.woff2);unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:300;src:url(/cf-fonts/v/inter/5.0.16/latin-ext/wght/normal.woff2);unicode-range:U+0100-02AF,U+0304,U+0308,U+0329,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:400;src:url(/cf-fonts/v/inter/5.0.16/latin/wght/normal.woff2);unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:400;src:url(/cf-fonts/v/inter/5.0.16/greek-ext/wght/normal.woff2);unicode-range:U+1F00-1FFF;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:400;src:url(/cf-fonts/v/inter/5.0.16/cyrillic-ext/wght/normal.woff2);unicode-range:U+0460-052F,U+1C80-1C88,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:400;src:url(/cf-fonts/v/inter/5.0.16/greek/wght/normal.woff2);unicode-range:U+0370-03FF;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:400;src:url(/cf-fonts/v/inter/5.0.16/cyrillic/wght/normal.woff2);unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:400;src:url(/cf-fonts/v/inter/5.0.16/latin-ext/wght/normal.woff2);unicode-range:U+0100-02AF,U+0304,U+0308,U+0329,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:400;src:url(/cf-fonts/v/inter/5.0.16/vietnamese/wght/normal.woff2);unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:600;src:url(/cf-fonts/v/inter/5.0.16/cyrillic/wght/normal.woff2);unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:600;src:url(/cf-fonts/v/inter/5.0.16/latin-ext/wght/normal.woff2);unicode-range:U+0100-02AF,U+0304,U+0308,U+0329,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:600;src:url(/cf-fonts/v/inter/5.0.16/greek-ext/wght/normal.woff2);unicode-range:U+1F00-1FFF;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:600;src:url(/cf-fonts/v/inter/5.0.16/latin/wght/normal.woff2);unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:600;src:url(/cf-fonts/v/inter/5.0.16/vietnamese/wght/normal.woff2);unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:600;src:url(/cf-fonts/v/inter/5.0.16/greek/wght/normal.woff2);unicode-range:U+0370-03FF;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:600;src:url(/cf-fonts/v/inter/5.0.16/cyrillic-ext/wght/normal.woff2);unicode-range:U+0460-052F,U+1C80-1C88,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:700;src:url(/cf-fonts/v/inter/5.0.16/cyrillic-ext/wght/normal.woff2);unicode-range:U+0460-052F,U+1C80-1C88,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:700;src:url(/cf-fonts/v/inter/5.0.16/greek-ext/wght/normal.woff2);unicode-range:U+1F00-1FFF;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:700;src:url(/cf-fonts/v/inter/5.0.16/latin/wght/normal.woff2);unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:700;src:url(/cf-fonts/v/inter/5.0.16/latin-ext/wght/normal.woff2);unicode-range:U+0100-02AF,U+0304,U+0308,U+0329,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:700;src:url(/cf-fonts/v/inter/5.0.16/vietnamese/wght/normal.woff2);unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:700;src:url(/cf-fonts/v/inter/5.0.16/cyrillic/wght/normal.woff2);unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116;font-display:swap;}@font-face {font-family:Inter;font-style:normal;font-weight:700;src:url(/cf-fonts/v/inter/5.0.16/greek/wght/normal.woff2);unicode-range:U+0370-03FF;font-display:swap;}</style>
+    <title>GrokAPI 管理面板</title>
     <style>
-        :root {
-            --primary: #3498db;
-            --primary-hover: #1575b5;
-            --secondary: #64748B;
-            --success: #10B981;
-            --danger: #EF4444;
-            --warning: #F59E0B;
-            --bg-light: #F8FAFC;
-            --bg-white: #FFFFFF;
-            --text-dark: #1F2937;
-            --text-muted: #64748B;
-            --border: #E2E8F0;
-            --shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            --card-border: #E2E8F0;
-            --progress-bg: #E2E8F0;
-            --status-active-bg: rgba(16, 185, 129, 0.1);
-            --status-expired-bg: rgba(239, 68, 68, 0.1);
-            --progress-fill-success: #10B981;
-            --progress-fill-warning: #F59E0B;
-            --progress-fill-danger: #EF4444;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg-light); color: var(--text-dark); line-height: 1.6; min-height: 100vh; padding-top: 5rem; }
-        .container { max-width: 1280px; margin: 0 auto; padding: 0 1.5rem; }
-        .card { background: var(--bg-white); border-radius: 0.75rem; box-shadow: var(--shadow); padding: 1.5rem; margin-bottom: 1.5rem; border: 1px solid var(--card-border); }
-        
-        .search-section { 
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            right: 0; 
-            z-index: 100; 
-            background: var(--bg-white); 
-            box-shadow: var(--shadow); 
-            padding: 1rem 1.5rem; 
-            margin: 0; 
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f8fafc;
+            color: #334155;
+            line-height: 1.6;
+            padding: 2rem;
         }
-        .search-section .card { 
-            padding: 0; 
-            margin: 0; 
-            box-shadow: none; 
-            border: none; 
-        }
-        .search-input { 
-            width: 100%; 
-            padding: 0.75rem 1rem 0.75rem 2.5rem; 
-            border: 1px solid #CBD5E1; 
-            border-radius: 0.5rem; 
-            font-size: 0.9rem; 
-            background: #F9FAFB url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="%2364748B" stroke-width="2"><circle cx="7" cy="7" r="5"/><path d="M11 11l4 4"/></svg>') no-repeat 0.75rem center; 
-            transition: border-color 0.2s ease, box-shadow 0.2s ease; 
-        }
-        .search-input:focus { 
-            border-color: #0f5fc3; 
-            outline: none; 
-            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2); 
-        }
-        .btn-base { padding: 0.5rem 1rem; border-radius: 0.5rem; border: none; cursor: pointer; font-weight: 500; display: inline-flex; align-items: center; gap: 0.5rem; transition: transform 0.2s ease, background 0.3s ease, box-shadow 0.2s ease; }
-        .btn { background: linear-gradient(135deg, var(--primary) 0%, #0f5fc3 100%); color: white; }
-        .btn:hover { background: linear-gradient(135deg, var(--primary-hover) 0%, #0f5fc3 100%); transform: translateY(-2px); box-shadow: 0 4px 15px rgba(107, 70, 193, 0.3); }
-        .btn-secondary { background: linear-gradient(135deg, var(--primary) 0%, #0f5fc3 100%); color: white; width: 2rem; height: 2rem; padding: 0; justify-content: center; }
-        .btn-secondary:hover { background: linear-gradient(135deg, var(--primary-hover) 0%, #0f5fc3 100%); transform: translateY(-1px); box-shadow: 0 2px 8px rgba(107, 70, 193, 0.3); }
-        .btn-danger { background: var(--danger); width: 2rem; height: 2rem; padding: 0; justify-content: center; }
-        .btn-danger:hover { background: #DC2626; }
-        .token-manage-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; margin-top: 1rem; }
-        .input-group { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; }
-        .input-field { flex: 1; min-width: 0; padding: 0.75rem; border: 1px solid #CBD5E1; border-radius: 0.5rem; font-size: 0.9rem; background: #F9FAFB; transition: border-color 0.2s ease, box-shadow 0.2s ease; }
-        .input-field:focus { border-color: #0f5fc3; outline: none; box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2); }
-        #statusFilter, #modelSelect { background: #F9FAFB; border: 1px solid #CBD5E1; color: var(--text-dark); }
-        #statusFilter:focus, #modelSelect:focus { border-color: #0f5fc3; box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2); }
-        .token-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
-        .token-card { background: var(--bg-white); border: 1px solid var(--card-border); border-radius: 0.75rem; box-shadow: var(--shadow); padding: 1rem; display: flex; flex-direction: column; gap: 1rem; transition: transform 0.2s ease; max-width: 100%; overflow: hidden; }
-        .token-card:hover { transform: translateY(-4px); }
-        .token-checkbox { display: none; }
-        .token-checkbox.show { display: block; position: absolute; top: 1rem; left: 1rem; }
-        .token-header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.5rem; border-bottom: 1px solid var(--border); padding-bottom: 0.75rem; }
-        .token-title { font-weight: 600; font-size: 0.9rem; color: var(--text-dark); flex: 1 1 auto; max-width: calc(100% - 80px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .token-actions { display: flex; gap: 0.5rem; flex-shrink: 0; }
-        .model-list { display: grid; gap: 0.75rem; }
-        .model-item { display: grid; grid-template-columns: 1fr 2fr 80px; gap: 0.5rem; align-items: center; padding: 0.5rem; background: rgba(248, 250, 252, 0.5); border-radius: 0.5rem; }
-        .model-name { font-size: 0.85rem; font-weight: 500; color: var(--text-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}     
-        .progress-container { display: flex; align-items: center; gap: 0.5rem; }
-        .progress-bar { flex: 1; height: 0.375rem; background: var(--progress-bg); border-radius: 1rem; overflow: hidden; }
-        .progress-fill { height: 100%; border-radius: 1rem; transition: width 0.3s ease; }
-        .progress-text { font-size: 0.75rem; color: var(--text-muted); min-width: 40px; }
-        .status { font-size: 0.75rem; padding: 0.25rem 0.75rem; border-radius: 1rem; text-align: center; font-weight: 500; }
-        .status-active { background: var(--status-active-bg); color: var(--success); }
-        .status-expired { background: var(--status-expired-bg); color: var(--danger); position: relative; }
-        .status-expired .tooltip { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); background: var(--text-dark); color: white; padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem; white-space: nowrap; opacity: 0; visibility: hidden; transition: opacity 0.2s; margin-bottom: 0.5rem; }
-        .status-expired:hover .tooltip { opacity: 1; visibility: visible; }
-        .notification { position: fixed; top: 5rem; left: 50%; transform: translateX(-50%); background: var(--primary); color: white; padding: 0.75rem 1.5rem; border-radius: 0.5rem; box-shadow: var(--shadow); z-index: 1000; display: none; animation: slideIn 0.3s ease; }
-        @keyframes slideIn { from { transform: translateX(-50%) translateY(-100%); opacity: 0; } to { transform: translateX(-50%) translateY(0); opacity: 1; } }
 
-        .overview-section { background: var(--bg-white); border-radius: 1rem; padding: 1.5rem; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06); position: relative; overflow: hidden; }
-        .overview-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
-        .overview-title { font-size: 1.5rem; font-weight: 700; color: var(--text-dark); }
-        .overview-actions { display: flex; gap: 0.75rem; }
-        .overview-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; }
-        .overview-card { background: linear-gradient(135deg, #F9FAFB 0%, #F1F5F9 100%); border-radius: 0.75rem; padding: 1rem; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04); transition: transform 0.2s ease, box-shadow 0.2s ease; display: flex; align-items: center; gap: 1rem; position: relative; border: 1px solid rgba(107, 70, 193, 0.1); }
-        .overview-card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(107, 70, 193, 0.15); }
-        .overview-icon { width: 2.5rem; height: 2.5rem; background: linear-gradient(135deg, rgba(107, 70, 193, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%); border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; color: var(--primary); flex-shrink: 0; }
-        .overview-content { display: flex; flex-direction: column; gap: 0.25rem; }
-        .overview-label { font-size: 0.9rem; font-weight: 500; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05px; }
-        .overview-value { font-size: 1.75rem; font-weight: 700; color: var(--primary); }
-        .overview-card::after { content: attr(data-tooltip); position: absolute; top: -2.5rem; left: 50%; transform: translateX(-50%); background: rgba(31, 41, 55, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 0.5rem; font-size: 0.85rem; white-space: nowrap; opacity: 0; visibility: hidden; transition: opacity 0.2s ease; pointer-events: none; }
-        .overview-card:hover::after { opacity: 1; visibility: visible; }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
 
-        .pagination { display: flex; justify-content: center; align-items: center; gap: 0.5rem; margin-top: 1.5rem; }
-        .pagination-btn { padding: 0.5rem 1rem; border-radius: 0.5rem; border: 1px solid var(--border); background: var(--bg-white); cursor: pointer; font-size: 0.9rem; transition: background 0.2s ease; }
-        .pagination-btn:hover { background: var(--bg-light); }
-        .pagination-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-        .pagination-select { padding: 0.5rem; border: 1px solid var(--border); border-radius: 0.5rem; font-size: 0.9rem; }
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
 
-        @media (max-width: 768px) {
-            .overview-grid { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.75rem; }
-            .overview-card { padding: 0.75rem; }
-            .overview-icon { width: 2rem; height: 2rem; }
-            .overview-value { font-size: 1.5rem; }
-            .overview-label { font-size: 0.85rem; }
-            .token-grid { grid-template-columns: 1fr; gap: 1rem; }
-            .token-card { padding: 0.75rem; }
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: #64748b;
+            font-size: 1.1rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+            margin-bottom: 2rem;
+        }
+
+        .card-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .stats {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .stats-number {
+            font-weight: 600;
+            color: #0f172a;
+            font-size: 1.1rem;
+        }
+
+        .add-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .input-textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+            resize: vertical;
+            min-height: 120px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .input-textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .token-management {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
         }
 
         @media (min-width: 768px) {
-            .token-grid { grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); }
-            .token-card { min-height: 240px; }
-            .token-manage-grid { grid-template-columns: repeat(2, 1fr); }
+            .token-management {
+                grid-template-columns: 1fr 1fr;
+                gap: 2rem;
+            }
         }
 
-        @media (max-width: 480px) {
-            body { padding: 5rem 1rem 1rem; }
-            .card { padding: 1rem; }
-            .overview-section { padding: 1rem; }
-            .overview-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
-            .overview-actions { width: 100%; justify-content: flex-end; }
-            .overview-grid { grid-template-columns: 1fr; gap: 0.75rem; }
-            .overview-card { padding: 1rem; }
-            .overview-value { font-size: 1.5rem; }
-            .search-section { padding: 0.5rem 1rem; }
-            .search-section .input-group { flex-direction: column; gap: 0.5rem; }
-            .search-input, #statusFilter { width: 100%; }
-            .pagination { flex-wrap: wrap; gap: 0.75rem; }
-            .input-group label { width: 100%; margin-bottom: 0.5rem; }
-            .input-field { width: 100%; }
+        .token-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .token-item label {
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.9rem;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .input-group .input-field {
+            flex: 1;
+        }
+
+        .input-field[readonly] {
+            background: #f9fafb;
+            cursor: default;
+        }
+
+        .input-field {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #64748b;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #475569;
+            transform: translateY(-1px);
+        }
+
+        .btn-small {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.85rem;
+        }
+
+        .cookie-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .cookie-table th,
+        .cookie-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .cookie-table th:first-child,
+        .cookie-table td:first-child {
+            width: 80px;
+            text-align: center;
+        }
+
+        .cookie-table th:last-child,
+        .cookie-table td:last-child {
+            width: 140px;
+            text-align: center;
+        }
+
+        .cookie-table th:nth-child(2),
+        .cookie-table td:nth-child(2) {
+            width: auto;
+            text-align: center;
+        }
+
+        .cookie-table th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .cookie-table tr:hover {
+            background: #f8fafc;
+        }
+
+        .cookie-content {
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+            font-size: 0.85rem;
+            color: #64748b;
+            word-break: break-all;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+            text-align: left;
+        }
+
+        .cookie-content:hover {
+            background-color: #f1f5f9;
+            color: #3b82f6;
+        }
+
+        .actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .notification {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            background: #10b981;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        .notification.error {
+            background: #ef4444;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .loading {
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 50%;
+            border-top-color: #3b82f6;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #64748b;
+        }
+
+        .empty-state svg {
+            width: 3rem;
+            height: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .card-body {
+                padding: 1rem;
+            }
+
+            .cookie-table th,
+            .cookie-table td {
+                padding: 0.75rem 0.5rem;
+            }
+
+            .cookie-table th:first-child,
+            .cookie-table td:first-child {
+                width: 50px;
+            }
+
+            .cookie-table th:last-child,
+            .cookie-table td:last-child {
+                width: 120px;
+            }
+
+            .actions {
+                flex-direction: column;
+                gap: 0.25rem;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .input-textarea {
+                min-height: 100px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="search-section">
-        <div class="card">
-            <div class="input-group">
-                <input type="text" class="search-input" id="searchInput" placeholder="搜索 Token..." aria-label="搜索 Token" style="flex: 1;">
-                <select class="input-field" id="statusFilter" style="width: 120px;" aria-label="筛选 Token 状态">
-                    <option value="all">全部</option>
-                    <option value="active">活跃</option>
-                    <option value="expired">失效</option>
-                </select>
-            </div>
-        </div>
-    </div>
-
     <div class="container">
-        <div class="overview-section card">
-            <div class="overview-header">
-                <h2 class="overview-title">添加 SSO Token</h2>
-                <div class="overview-actions">
-                    <button class="btn btn-base" id="batchDeleteTokens" aria-label="批量删除选中的 Token">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M3 6h18M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M10 11v6M14 11v6M4 6v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6"/>
-                        </svg>
-                        批量删除
-                    </button>
-                    <button class="btn btn-base" id="refreshTokens" aria-label="刷新 Token 列表">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
-                            <path d="M21 3v5h-5"/>
-                            <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
-                            <path d="M3 21v-5h5"/>
-                        </svg>
-                        刷新
-                    </button>
+        <div class="header">
+            <h1>GrokAPI 管理面板</h1>
+            <p>管理您的 Grok API Cookie 令牌</p>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">添加 Cookie</h2>
+            </div>
+            <div class="card-body">
+                <div class="add-section">
+                    <textarea 
+                        class="input-textarea" 
+                        id="cookieInput" 
+                        placeholder="请输入 Cookie 值 (如: eyJ0eXAiOiJKV1QiLCJhbGciOi...)&#10;支持批量添加，一行一个"
+                    ></textarea>
+                    <div class="button-group">
+                        <button class="btn btn-primary" id="addCookieBtn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 5v14m-7-7h14"/>
+                            </svg>
+                            添加 Cookie
+                        </button>
+                        <button class="btn btn-secondary" id="clearBtn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 6h18m-2 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                            </svg>
+                            清空
+                        </button>
+                    </div>
                 </div>
             </div>
-            <div class="token-manage-grid">
-                <div style="grid-column: 1 / -1;">
-                    <h4 style="margin-bottom: 0.75rem;">批量添加 SSO Token</h4>
-                    <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-                        <textarea class="input-field" id="batchTokenInput" placeholder="输入多个 SSO Token，一行一个" aria-label="输入多个 SSO Token，一行一个" rows="6" style="resize: vertical; min-height: 120px; font-family: monospace;"></textarea>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Token 管理</h2>
+            </div>
+            <div class="card-body">
+                <div class="token-management">
+                    <div class="token-item">
+                        <label for="baseUrl">Base URL</label>
                         <div class="input-group">
-                            <button class="btn btn-base" id="addBatchTokenBtn" aria-label="批量添加 SSO Token">批量添加</button>
-                            <button class="btn btn-base" id="clearTokenInputBtn" aria-label="清空输入框">清空</button>
+                            <input type="text" class="input-field" id="baseUrl" readonly />
+                            <button class="btn btn-secondary" id="copyBaseUrlBtn">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="9" y="9" width="13" height="13" rx="2"/>
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                                </svg>
+                                复制
+                            </button>
+                        </div>
+                    </div>
+                    <div class="token-item">
+                        <label for="apiKey">API Key</label>
+                        <div class="input-group">
+                            <input type="text" class="input-field" id="apiKey" />
+                            <button class="btn btn-primary" id="saveApiKeyBtn">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                                    <polyline points="17,21 17,13 7,13 7,21"/>
+                                    <polyline points="7,3 7,8 15,8"/>
+                                </svg>
+                                保存
+                            </button>
+                            <button class="btn btn-secondary" id="copyApiKeyBtn">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="9" y="9" width="13" height="13" rx="2"/>
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                                </svg>
+                                复制
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -205,485 +462,307 @@
         </div>
 
         <div class="card">
-            <h3>Token 管理</h3>
-            <div class="token-manage-grid">
-                <div>
-                    <h4 style="margin-bottom: 0.75rem;">Base URL</h4>
-                    <div class="input-group">
-                        <input type="text" class="input-field" id="baseUrl" readonly aria-label="Base URL" value="">
-                        <button class="btn btn-base" id="copyBaseUrlBtn" aria-label="复制 Base URL">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <rect x="9" y="9" width="13" height="13" rx="2"/>
-                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-                            </svg>
-                            复制
-                        </button>
-                    </div>
-                </div>
-                <div>
-                    <h4 style="margin-bottom: 0.75rem;">API Key</h4>
-                    <div class="input-group">
-                        <input type="text" class="input-field" id="apiKey" aria-label="API Key">
-                        <button class="btn btn-base" id="copyApiKeyBtn" aria-label="复制 API Key">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <rect x="9" y="9" width="13" height="13" rx="2"/>
-                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-                            </svg>
-                            复制
-                        </button>
-                    </div>
+            <div class="card-header">
+                <h2 class="card-title">Cookie 列表</h2>
+                <div class="stats">
+                    <span>总数：</span>
+                    <span class="stats-number" id="cookieCount">0</span>
                 </div>
             </div>
-        </div>
-
-        <div class="token-grid" id="tokenGrid"></div>
-        <div class="pagination" id="pagination">
-            <button class="pagination-btn" id="prevPage" aria-label="上一页">上一页</button>
-            <select class="pagination-select" id="pageSelect" aria-label="选择页面"></select>
-            <button class="pagination-btn" id="nextPage" aria-label="下一页">下一页</button>
+            <div class="card-body">
+                <div id="cookieTableContainer">
+                    <table class="cookie-table" id="cookieTable">
+                        <thead>
+                            <tr>
+                                <th>序号</th>
+                                <th>Cookie</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cookieTableBody">
+                        </tbody>
+                    </table>
+                </div>
+                <div class="empty-state" id="emptyState" style="display: none;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10"/>
+                    </svg>
+                    <p>暂无 Cookie，请先添加</p>
+                </div>
+            </div>
         </div>
     </div>
 
     <div class="notification" id="notification"></div>
 
     <script>
-        var modelConfig = {
-            "grok-3": { RequestFrequency: 20, ExpirationTime: 7200000 },
-            "grok-4": { RequestFrequency: 20, ExpirationTime: 7200000 }
-        };
+        let cookies = [];
 
-        let tokenMap = {};
-        let batchDeleteMode = false;
-        let lastUpdateTime = 0;
-        let currentPage = 1;
-        const itemsPerPage = 30;
-
-        function calculateModelRemaining() {
-            return {};
-        }
-
-        
-        
-        
-        function createTokenCard(token, tokenData) {
-            const tokenCard = document.createElement('div');
-            tokenCard.className = 'token-card';
-            tokenCard.setAttribute('data-token', token);
-
-            const checkbox = document.createElement('input');
-            checkbox.type = 'checkbox';
-            checkbox.className = `token-checkbox ${batchDeleteMode ? 'show' : ''}`;
-            checkbox.value = token;
-
-            const tokenHeader = document.createElement('div');
-            tokenHeader.className = 'token-header';
-
-            const tokenTitle = document.createElement('div');
-            tokenTitle.className = 'token-title';
-            tokenTitle.textContent = token;
-            tokenTitle.title = token;
-
-            const tokenActions = document.createElement('div');
-            tokenActions.className = 'token-actions';
-
-            const copyBtn = document.createElement('button');
-            copyBtn.className = 'btn btn-secondary btn-base';
-            copyBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
-            copyBtn.setAttribute('aria-label', '复制 Token 到剪贴板');
-            copyBtn.addEventListener('click', async () => {
-                try {
-                    await navigator.clipboard.writeText(token);
-                    showNotification('Token 已复制到剪贴板');
-                } catch (err) {
-                    showNotification('复制失败，请重试');
-                }
-            });
-
-            const deleteBtn = document.createElement('button');
-            deleteBtn.className = 'btn btn-danger btn-base';
-            deleteBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M10 11v6M14 11v6M4 6v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6"/></svg>';
-            deleteBtn.setAttribute('aria-label', `删除 Token ${token}`);
-            deleteBtn.addEventListener('click', async () => {
-                if (confirm(`确认删除 token: ${token}?`)) {
-                    try {
-                        const baseUrl = document.getElementById('baseUrl').value;
-                        const response = await fetch(`${baseUrl}/manager/api/delete`, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ sso: token })
-                        });
-                        if (response.ok) {
-                            await fetchTokenMap();
-                            showNotification('Token 删除成功');
-                        } else {
-                            showNotification('删除 Token 失败');
-                        }
-                    } catch (error) {
-                        showNotification('删除 Token 出错');
-                    }
-                }
-            });
-
-            tokenActions.appendChild(copyBtn);
-            tokenActions.appendChild(deleteBtn);
-            tokenHeader.appendChild(tokenTitle);
-            tokenHeader.appendChild(tokenActions);
-
-            const modelList = document.createElement('div');
-            modelList.className = 'model-list';
-
-            Object.entries(modelConfig).forEach(([modelName, config]) => {
-                const modelItem = document.createElement('div');
-                modelItem.className = 'model-item';
-
-                const modelNameSpan = document.createElement('div');
-                modelNameSpan.className = 'model-name';
-                modelNameSpan.textContent = modelName;
-
-                const status = document.createElement('div');
-                status.className = 'status status-active';
-                status.textContent = '活跃';
-
-                modelItem.appendChild(modelNameSpan);
-                modelItem.appendChild(document.createElement('div'));
-                modelItem.appendChild(status);
-                modelList.appendChild(modelItem);
-            });
-
-            tokenCard.appendChild(checkbox);
-            tokenCard.appendChild(tokenHeader);
-            tokenCard.appendChild(modelList);
-            return tokenCard;
-        }
-
-        function updateTokenCard(token, tokenData) {
-            const tokenCard = document.querySelector(`[data-token="${token}"]`);
-            const checkbox = tokenCard.querySelector('.token-checkbox');
-            checkbox.className = `token-checkbox ${batchDeleteMode ? 'show' : ''}`;
-        }
-
-        function renderTokenDiff(newTokenMap) {
-            const tokenGrid = document.getElementById('tokenGrid');
-            if (!tokenGrid) {
-                console.error('Token grid element not found.');
-                return;
-            }
-            const existingTokens = new Set(Array.from(tokenGrid.children).map(card => card.getAttribute('data-token')));
-            const filteredTokens = filterTokensArray(Object.entries(newTokenMap));
-            const totalItems = filteredTokens.length;
-            const totalPages = Math.ceil(totalItems / itemsPerPage);
-            currentPage = Math.min(currentPage, totalPages) || 1;
-
-            const startIndex = (currentPage - 1) * itemsPerPage;
-            const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
-            const tokensToRender = filteredTokens.slice(startIndex, endIndex);
-
-            const newTokens = new Set(tokensToRender.map(([token]) => token));
-
-            existingTokens.forEach(token => {
-                if (!newTokens.has(token)) {
-                    tokenGrid.querySelector(`[data-token="${token}"]`).remove();
-                }
-            });
-
-            tokensToRender.forEach(([token, tokenData]) => {
-                if (!existingTokens.has(token)) {
-                    const tokenCard = createTokenCard(token, tokenData);
-                    tokenGrid.appendChild(tokenCard);
-                } else {
-                    updateTokenCard(token, tokenData);
-                }
-            });
-
-                        renderPagination(totalPages);
-        }
-
-        function filterTokensArray(tokenEntries) {
-            const searchInput = document.getElementById('searchInput');
-            const statusFilter = document.getElementById('statusFilter');
-            if (!searchInput || !statusFilter) {
-                console.error('Search input or status filter element not found.');
-                return tokenEntries;
-            }
-            const searchTerm = searchInput.value.toLowerCase();
-            const statusFilterValue = statusFilter.value;
-
-            return tokenEntries.filter(([token, tokenData]) => {
-                const hasActive = Object.values(tokenData).some(data => data.isValid);
-                const hasExpired = Object.values(tokenData).some(data => !data.isValid);
-
-                let display = true;
-                if (!token.toLowerCase().includes(searchTerm)) display = false;
-                if (statusFilterValue === 'active' && !hasActive) display = false;
-                if (statusFilterValue === 'expired' && !hasExpired) display = false;
-
-                return display;
-            });
-        }
-
-        function renderPagination(totalPages) {
-            const pageSelect = document.getElementById('pageSelect');
-            if (!pageSelect) {
-                console.error('Page select element not found.');
-                return;
-            }
-            pageSelect.innerHTML = '';
-            for (let i = 1; i <= totalPages; i++) {
-                const option = document.createElement('option');
-                option.value = i;
-                option.textContent = `第 ${i} 页`;
-                if (i === currentPage) option.selected = true;
-                pageSelect.appendChild(option);
-            }
-
-            const prevPage = document.getElementById('prevPage');
-            const nextPage = document.getElementById('nextPage');
-            if (prevPage) prevPage.disabled = currentPage === 1;
-            if (nextPage) nextPage.disabled = currentPage === totalPages || totalPages === 0;
-        }
-
-        async function fetchTokenMap() {
-            console.log('开始获取 tokenMap');
+        async function loadCookies() {
             try {
-                const baseUrlElement = document.getElementById('baseUrl');
-                if (!baseUrlElement) {
-                    throw new Error('Base URL 元素未找到');
-                }
-                const baseUrl = baseUrlElement.value;
-                console.log('请求 URL:', `${baseUrl}/manager/api/get`);
-                const response = await fetch(`${baseUrl}/manager/api/get`);
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    throw new Error(`获取 Token 失败: ${response.status} - ${errorText}`);
-                }
+                const response = await fetch('/manager/api/get');
                 const data = await response.json();
-                console.log('获取到的数据:', data);
-                if (!data || typeof data !== 'object') {
-                    throw new Error('返回的数据不是有效的 Token Map');
-                }
-                tokenMap = data;
-                renderTokenDiff(tokenMap);
-                console.log('tokenMap 更新成功');
+                
+                cookies = Object.keys(data);
+                updateUI();
             } catch (error) {
-                console.error('获取 Token 出错:', error);
-                showNotification(`获取 Token 出错: ${error.message}`);
+                showNotification('加载 Cookie 失败: ' + error.message, 'error');
             }
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
+        function formatCookie(cookie) {
+            if (cookie.length <= 50) {
+                return cookie;
+            }
+            return cookie.substring(0, 25) + '...' + cookie.substring(cookie.length - 25);
+        }
+
+        function updateUI() {
+            const cookieCount = document.getElementById('cookieCount');
+            const cookieTableBody = document.getElementById('cookieTableBody');
+            const emptyState = document.getElementById('emptyState');
+            const cookieTableContainer = document.getElementById('cookieTableContainer');
+
+            cookieCount.textContent = cookies.length;
+
+            if (cookies.length === 0) {
+                cookieTableContainer.style.display = 'none';
+                emptyState.style.display = 'block';
+            } else {
+                cookieTableContainer.style.display = 'block';
+                emptyState.style.display = 'none';
+
+                cookieTableBody.innerHTML = '';
+                cookies.forEach((cookie, index) => {
+                    const row = document.createElement('tr');
+                    const cookieDisplay = formatCookie(cookie);
+                    row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td><div class="cookie-content" title="点击复制完整 Cookie: ${cookie}" onclick="copyCookie('${cookie.replace(/'/g, "\\'")}'')">${cookieDisplay}</div></td>
+                        <td>
+                            <div class="actions">
+                                <button class="btn btn-secondary btn-small" onclick="testCookie('${cookie.replace(/'/g, "\\'")}'')">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M9 12l2 2 4-4"/>
+                                        <path d="M21 12c-1.5-4.5-4.5-7-9-7s-7.5 2.5-9 7c1.5 4.5 4.5 7 9 7s7.5-2.5 9-7z"/>
+                                    </svg>
+                                    测试
+                                </button>
+                                <button class="btn btn-danger btn-small" onclick="deleteCookie('${cookie.replace(/'/g, "\\'")}'')">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M3 6h18m-2 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                    </svg>
+                                    删除
+                                </button>
+                            </div>
+                        </td>
+                    `;
+                    cookieTableBody.appendChild(row);
+                });
+            }
+        }
+
+        async function addCookie() {
+            const cookieInput = document.getElementById('cookieInput');
+            const cookieText = cookieInput.value.trim();
+
+            if (!cookieText) {
+                showNotification('请输入 Cookie', 'error');
+                return;
+            }
+
+            // 按行分割，支持批量添加
+            const cookieLines = cookieText.split('\n').map(line => line.trim()).filter(line => line);
+            
+            if (cookieLines.length === 0) {
+                showNotification('请输入有效的 Cookie', 'error');
+                return;
+            }
+
+            let successCount = 0;
+            let failCount = 0;
+            
+            for (const cookieLine of cookieLines) {
+                try {
+                    const response = await fetch('/manager/api/add', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ sso: cookieLine })
+                    });
+
+                    if (response.ok) {
+                        successCount++;
+                    } else {
+                        failCount++;
+                    }
+                } catch (error) {
+                    failCount++;
+                }
+            }
+
+            cookieInput.value = '';
+            await loadCookies();
+            
+            if (failCount === 0) {
+                showNotification(`成功添加 ${successCount} 个 Cookie`);
+            } else if (successCount > 0) {
+                showNotification(`成功添加 ${successCount} 个，失败 ${failCount} 个`, 'error');
+            } else {
+                showNotification(`所有 Cookie 添加失败`, 'error');
+            }
+        }
+
+        function clearInput() {
+            const cookieInput = document.getElementById('cookieInput');
+            cookieInput.value = '';
+            showNotification('输入框已清空');
+        }
+
+        async function copyCookie(cookie) {
+            try {
+                await navigator.clipboard.writeText(cookie);
+                showNotification('Cookie 已复制到剪贴板');
+            } catch (err) {
+                showNotification('复制失败，请重试', 'error');
+            }
+        }
+
+        function initializeTokenManagement() {
             const baseUrlInput = document.getElementById('baseUrl');
+            const apiKeyInput = document.getElementById('apiKey');
+            
+            // 设置 Base URL
             if (baseUrlInput) {
                 baseUrlInput.value = window.location.origin;
-            } else {
-                console.error('Base URL input element not found.');
             }
-
-            const apiKeyInput = document.getElementById('apiKey');
+            
+            // 加载保存的 API Key
             if (apiKeyInput) {
                 const savedApiKey = localStorage.getItem('apiKey');
-                apiKeyInput.value = savedApiKey || 'sk-1234567';
-                apiKeyInput.addEventListener('change', () => {
-                    const newApiKey = apiKeyInput.value.trim();
-                    if (newApiKey) {
-                        localStorage.setItem('apiKey', newApiKey);
-                        showNotification(`API Key 已更新为: ${newApiKey}`);
-                    } else {
-                        apiKeyInput.value = localStorage.getItem('apiKey') || 'sk-1234567';
-                        showNotification('API Key 不能为空，已恢复为上次保存的值');
-                    }
-                });
-            } else {
-                console.error('API Key input element not found.');
-            }
-
-            const copyBaseUrlBtn = document.getElementById('copyBaseUrlBtn');
-            if (copyBaseUrlBtn) {
-                copyBaseUrlBtn.addEventListener('click', async () => {
-                    try {
-                        await navigator.clipboard.writeText(baseUrlInput.value);
-                        showNotification('Base URL 已复制到剪贴板');
-                    } catch (err) {
-                        showNotification('复制失败，请重试');
-                    }
-                });
-            }
-
-            const copyApiKeyBtn = document.getElementById('copyApiKeyBtn');
-            if (copyApiKeyBtn) {
-                copyApiKeyBtn.addEventListener('click', async () => {
-                    try {
-                        await navigator.clipboard.writeText(apiKeyInput.value);
-                        showNotification('API Key 已复制到剪贴板');
-                    } catch (err) {
-                        showNotification('复制失败，请重试');
-                    }
-                });
-            }
-
-            
-            const addBatchTokenBtn = document.getElementById('addBatchTokenBtn');
-            if (addBatchTokenBtn) {
-                addBatchTokenBtn.addEventListener('click', async () => {
-                    const tokenInput = document.getElementById('batchTokenInput');
-                    const tokenText = tokenInput.value.trim();
-                    if (tokenText) {
-                        const tokens = tokenText.split('\n').map(t => t.trim()).filter(t => t.length > 0);
-                        if (tokens.length === 0) {
-                            showNotification('请输入至少一个有效的 Token');
-                            return;
-                        }
-                        try {
-                            const baseUrl = document.getElementById('baseUrl').value;
-                            const successes = [];
-                            const failures = [];
-                            for (const token of tokens) {
-                                const response = await fetch(`${baseUrl}/manager/api/add`, {
-                                    method: 'POST',
-                                    headers: { 'Content-Type': 'application/json' },
-                                    body: JSON.stringify({ sso: token })
-                                });
-                                if (response.ok) {
-                                    successes.push(token);
-                                } else {
-                                    failures.push(token);
-                                }
-                            }
-                            tokenInput.value = '';
-                            await fetchTokenMap();
-                            if (successes.length > 0 && failures.length === 0) {
-                                showNotification(`成功添加 ${successes.length} 个 Token`);
-                            } else if (successes.length > 0 && failures.length > 0) {
-                                showNotification(`成功添加 ${successes.length} 个 Token，失败 ${failures.length} 个`);
-                            } else {
-                                showNotification('所有 Token 添加失败');
-                            }
-                        } catch (error) {
-                            showNotification('添加 Token 时出错');
-                        }
-                    } else {
-                        showNotification('请输入 Token');
-                    }
-                });
-            }
-
-            const clearTokenInputBtn = document.getElementById('clearTokenInputBtn');
-            if (clearTokenInputBtn) {
-                clearTokenInputBtn.addEventListener('click', () => {
-                    const tokenInput = document.getElementById('batchTokenInput');
-                    tokenInput.value = '';
-                    showNotification('输入框已清空');
-                });
-            }
-
-            
-            const batchDeleteTokens = document.getElementById('batchDeleteTokens');
-            if (batchDeleteTokens) {
-                batchDeleteTokens.addEventListener('click', async () => {
-                    if (!batchDeleteMode) {
-                        batchDeleteMode = true;
-                        renderTokenDiff(tokenMap);
-                        showNotification('请选择要删除的 Token');
-                    } else {
-                        const selectedTokens = Array.from(document.querySelectorAll('.token-checkbox:checked')).map(cb => cb.value);
-                        if (selectedTokens.length === 0) {
-                            showNotification('请至少选择一个 Token');
-                            return;
-                        }
-                        if (confirm(`确认删除 ${selectedTokens.length} 个 Token?`)) {
-                            try {
-                                const baseUrl = document.getElementById('baseUrl').value;
-                                const successes = [];
-                                const failures = [];
-                                for (const token of selectedTokens) {
-                                    const response = await fetch(`${baseUrl}/manager/api/delete`, {
-                                        method: 'POST',
-                                        headers: { 'Content-Type': 'application/json' },
-                                        body: JSON.stringify({ sso: token })
-                                    });
-                                    if (response.ok) {
-                                        successes.push(token);
-                                    } else {
-                                        failures.push(token);
-                                    }
-                                }
-                                batchDeleteMode = false;
-                                await fetchTokenMap();
-                                if (successes.length > 0 && failures.length === 0) {
-                                    showNotification(`成功删除 ${successes.length} 个 Token`);
-                                } else if (successes.length > 0 && failures.length > 0) {
-                                    showNotification(`成功删除 ${successes.length} 个 Token，失败 ${failures.length} 个`);
-                                } else {
-                                    showNotification('所有 Token 删除失败');
-                                }
-                            } catch (error) {
-                                showNotification('删除 Token 时出错');
-                            }
-                        }
-                    }
-                });
-            }
-
-            const searchInput = document.getElementById('searchInput');
-            if (searchInput) searchInput.addEventListener('input', () => renderTokenDiff(tokenMap));
-
-            const statusFilter = document.getElementById('statusFilter');
-            if (statusFilter) statusFilter.addEventListener('change', () => renderTokenDiff(tokenMap));
-
-            const refreshTokens = document.getElementById('refreshTokens');
-            if (refreshTokens) {
-                refreshTokens.addEventListener('click', async () => {
-                    await fetchTokenMap();
-                    showNotification('Token 列表已刷新');
-                });
-            } else {
-                console.error('Refresh Tokens button not found.');
-            }
-
-            const prevPage = document.getElementById('prevPage');
-            if (prevPage) {
-                prevPage.addEventListener('click', () => {
-                    if (currentPage > 1) {
-                        currentPage--;
-                        renderTokenDiff(tokenMap);
-                    }
-                });
-            }
-
-            const nextPage = document.getElementById('nextPage');
-            if (nextPage) {
-                nextPage.addEventListener('click', () => {
-                    const totalPages = Math.ceil(filterTokensArray(Object.entries(tokenMap)).length / itemsPerPage);
-                    if (currentPage < totalPages) {
-                        currentPage++;
-                        renderTokenDiff(tokenMap);
-                    }
-                });
-            }
-
-            const pageSelect = document.getElementById('pageSelect');
-            if (pageSelect) {
-                pageSelect.addEventListener('change', (e) => {
-                    currentPage = parseInt(e.target.value, 10);
-                    renderTokenDiff(tokenMap);
-                });
-            }
-
-            fetchTokenMap(); // 页面加载时获取 Token
-        });
-
-        function showNotification(message) {
-            const notification = document.getElementById('notification');
-            if (notification) {
-                notification.textContent = message;
-                notification.style.display = 'block';
-                const duration = Math.max(2000, message.length * 100);
-                setTimeout(() => {
-                    notification.style.display = 'none';
-                }, duration);
-            } else {
-                console.warn('Notification element not found.');
+                apiKeyInput.value = savedApiKey || 'sk-123456';
             }
         }
+
+        async function copyBaseUrl() {
+            const baseUrlInput = document.getElementById('baseUrl');
+            try {
+                await navigator.clipboard.writeText(baseUrlInput.value);
+                showNotification('Base URL 已复制到剪贴板');
+            } catch (err) {
+                showNotification('复制失败，请重试', 'error');
+            }
+        }
+
+        async function copyApiKey() {
+            const apiKeyInput = document.getElementById('apiKey');
+            try {
+                await navigator.clipboard.writeText(apiKeyInput.value);
+                showNotification('API Key 已复制到剪贴板');
+            } catch (err) {
+                showNotification('复制失败，请重试', 'error');
+            }
+        }
+
+        function saveApiKey() {
+            const apiKeyInput = document.getElementById('apiKey');
+            const apiKey = apiKeyInput.value.trim();
+            
+            if (!apiKey) {
+                showNotification('API Key 不能为空', 'error');
+                return;
+            }
+            
+            localStorage.setItem('apiKey', apiKey);
+            showNotification('API Key 已保存');
+        }
+
+        async function deleteCookie(cookie) {
+            if (!confirm('确定要删除这个 Cookie 吗？')) {
+                return;
+            }
+
+            try {
+                const response = await fetch('/manager/api/delete', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ sso: cookie })
+                });
+
+                if (response.ok) {
+                    await loadCookies();
+                    showNotification('Cookie 删除成功');
+                } else {
+                    const error = await response.text();
+                    showNotification('删除失败: ' + error, 'error');
+                }
+            } catch (error) {
+                showNotification('删除失败: ' + error.message, 'error');
+            }
+        }
+
+        async function testCookie(cookie) {
+            const testBtn = event.target.closest('button');
+            const originalContent = testBtn.innerHTML;
+            
+            testBtn.innerHTML = '<div class="loading"></div> 测试中...';
+            testBtn.disabled = true;
+
+            try {
+                const response = await fetch('/manager/api/test', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ cookie: cookie })
+                });
+
+                const result = await response.json();
+                
+                if (response.ok && result.success) {
+                    showNotification('Cookie 测试成功，响应正常');
+                } else {
+                    showNotification('Cookie 测试失败: ' + (result.error || '未知错误'), 'error');
+                }
+            } catch (error) {
+                showNotification('测试失败: ' + error.message, 'error');
+            } finally {
+                testBtn.innerHTML = originalContent;
+                testBtn.disabled = false;
+            }
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.className = 'notification' + (type === 'error' ? ' error' : '');
+            notification.textContent = message;
+            notification.style.display = 'block';
+
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+
+        // 事件监听
+        document.getElementById('addCookieBtn').addEventListener('click', addCookie);
+        document.getElementById('clearBtn').addEventListener('click', clearInput);
+        document.getElementById('cookieInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && e.ctrlKey) {
+                addCookie();
+            }
+        });
+        
+        // Token 管理事件监听
+        document.getElementById('copyBaseUrlBtn').addEventListener('click', copyBaseUrl);
+        document.getElementById('copyApiKeyBtn').addEventListener('click', copyApiKey);
+        document.getElementById('saveApiKeyBtn').addEventListener('click', saveApiKey);
+
+        // 页面加载时获取数据
+        initializeTokenManagement();
+        loadCookies();
     </script>
 </body>
 </html>

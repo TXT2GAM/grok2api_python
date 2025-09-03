@@ -268,13 +268,9 @@ class RequestHandler:
                         
                     elif response.status_code == 429:
                         response_status_code = 429
-                        
-                        self.token_manager.remove_failed_token(token)
-                        if self.token_manager.is_empty():
-                            raise ValueError("所有令牌都已失效，请添加新的令牌")
+                        logger.warning(f"令牌配额已用完，继续轮询其他令牌: {token[:20]}...", "Server")
                     else:
-                        logger.error(f"令牌异常错误状态! status: {response.status_code}", "Server")
-                        self.token_manager.remove_failed_token(token)
+                        logger.warning(f"令牌返回异常状态码 {response.status_code}，继续轮询: {token[:20]}...", "Server")
                         
                 except Exception as e:
                     logger.error(f"请求处理异常: {str(e)}", "Server")
@@ -283,7 +279,7 @@ class RequestHandler:
             if response_status_code == 403:
                 raise ValueError('IP暂时被封无法破盾，请稍后重试或者更换ip')
             elif response_status_code == 500:
-                raise ValueError('所有令牌都已失效，请添加新的令牌')    
+                raise ValueError('请求失败，请检查网络连接或稍后重试')    
                 
         except Exception as error:
             logger.error(str(error), "ChatAPI")
