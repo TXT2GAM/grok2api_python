@@ -229,13 +229,13 @@
 
         .cookie-table th:first-child,
         .cookie-table td:first-child {
-            width: 80px;
+            width: 160px;
             text-align: center;
         }
 
         .cookie-table th:last-child,
         .cookie-table td:last-child {
-            width: 140px;
+            width: 280px;
             text-align: center;
         }
 
@@ -267,7 +267,7 @@
             padding: 0.5rem;
             border-radius: 4px;
             transition: background-color 0.2s;
-            text-align: left;
+            text-align: center;
         }
 
         .cookie-content:hover {
@@ -379,6 +379,89 @@
                 min-height: 100px;
             }
         }
+
+        .pagination-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            padding: 1rem 0;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .page-size-control {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .page-size-control select {
+            padding: 0.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .pagination {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .pagination button {
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #d1d5db;
+            background: white;
+            color: #374151;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .pagination button:hover:not(:disabled) {
+            background: #f3f4f6;
+            border-color: #9ca3af;
+        }
+
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pagination button.active {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+
+        .page-info {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .pagination select {
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #d1d5db;
+            background: white;
+            color: #374151;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            min-width: 100px;
+        }
+
+        .pagination select:hover {
+            background: #f3f4f6;
+            border-color: #9ca3af;
+        }
+
+        .pagination select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
     </style>
 </head>
 <body>
@@ -482,6 +565,28 @@
                         <tbody id="cookieTableBody">
                         </tbody>
                     </table>
+                    <div class="pagination-container" id="paginationContainer">
+                        <div class="page-size-control">
+                            <span>每页显示：</span>
+                            <select id="pageSizeSelect">
+                                <option value="15" selected>15</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                            <span>条</span>
+                        </div>
+                        <div class="page-info" id="pageInfo">
+                            第 1 页，共 1 页
+                        </div>
+                        <div class="pagination" id="pagination">
+                            <select id="pageSelect" style="margin-right: 0.5rem;">
+                                <option value="1">第 1 页</option>
+                            </select>
+                            <button id="prevPage">上一页</button>
+                            <div id="pageNumbers"></div>
+                            <button id="nextPage">下一页</button>
+                        </div>
+                    </div>
                 </div>
                 <div class="empty-state" id="emptyState" style="display: none;">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -497,6 +602,8 @@
 
     <script>
         let cookies = [];
+        let currentPage = 1;
+        let pageSize = 15;
 
         async function loadCookies() {
             try {
@@ -504,6 +611,7 @@
                 const data = await response.json();
                 
                 cookies = Object.keys(data);
+                currentPage = 1; // 重置到第一页
                 updateUI();
             } catch (error) {
                 showNotification('加载 Cookie 失败: ' + error.message, 'error');
@@ -522,6 +630,7 @@
             const cookieTableBody = document.getElementById('cookieTableBody');
             const emptyState = document.getElementById('emptyState');
             const cookieTableContainer = document.getElementById('cookieTableContainer');
+            const paginationContainer = document.getElementById('paginationContainer');
 
             cookieCount.textContent = cookies.length;
 
@@ -532,23 +641,31 @@
                 cookieTableContainer.style.display = 'block';
                 emptyState.style.display = 'none';
 
+                // 计算分页
+                const totalPages = Math.ceil(cookies.length / pageSize);
+                const startIndex = (currentPage - 1) * pageSize;
+                const endIndex = Math.min(startIndex + pageSize, cookies.length);
+                const pageCookies = cookies.slice(startIndex, endIndex);
+
+                // 更新表格内容
                 cookieTableBody.innerHTML = '';
-                cookies.forEach((cookie, index) => {
+                pageCookies.forEach((cookie, index) => {
                     const row = document.createElement('tr');
+                    const globalIndex = startIndex + index + 1;
                     const cookieDisplay = formatCookie(cookie);
                     row.innerHTML = `
-                        <td>${index + 1}</td>
-                        <td><div class="cookie-content" title="点击复制完整 Cookie: ${cookie}" onclick="copyCookie('${cookie.replace(/'/g, "\\'")}'')">${cookieDisplay}</div></td>
+                        <td>${globalIndex}</td>
+                        <td><div class="cookie-content" title="点击复制完整 Cookie: ${cookie}" onclick="copyCookie(\`${cookie}\`)">${cookieDisplay}</div></td>
                         <td>
                             <div class="actions">
-                                <button class="btn btn-secondary btn-small" onclick="testCookie('${cookie.replace(/'/g, "\\'")}'')">
+                                <button class="btn btn-secondary btn-small" onclick="testCookie(\`${cookie}\`)">
                                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <path d="M9 12l2 2 4-4"/>
                                         <path d="M21 12c-1.5-4.5-4.5-7-9-7s-7.5 2.5-9 7c1.5 4.5 4.5 7 9 7s7.5-2.5 9-7z"/>
                                     </svg>
                                     测试
                                 </button>
-                                <button class="btn btn-danger btn-small" onclick="deleteCookie('${cookie.replace(/'/g, "\\'")}'')">
+                                <button class="btn btn-danger btn-small" onclick="deleteCookie(\`${cookie}\`)">
                                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <path d="M3 6h18m-2 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
                                     </svg>
@@ -559,7 +676,81 @@
                     `;
                     cookieTableBody.appendChild(row);
                 });
+
+                // 更新分页控件
+                updatePagination(totalPages);
+                
+                // 显示或隐藏分页控件
+                paginationContainer.style.display = totalPages > 1 ? 'flex' : 'none';
             }
+        }
+
+        function updatePagination(totalPages) {
+            const pageInfo = document.getElementById('pageInfo');
+            const prevPage = document.getElementById('prevPage');
+            const nextPage = document.getElementById('nextPage');
+            const pageNumbers = document.getElementById('pageNumbers');
+            const pageSelect = document.getElementById('pageSelect');
+
+            // 更新页面信息
+            pageInfo.textContent = `第 ${currentPage} 页，共 ${totalPages} 页`;
+
+            // 更新上一页按钮
+            prevPage.disabled = currentPage <= 1;
+            
+            // 更新下一页按钮
+            nextPage.disabled = currentPage >= totalPages;
+
+            // 更新页码
+            pageNumbers.innerHTML = '';
+            
+            // 显示页码逻辑
+            let startPage = Math.max(1, currentPage - 2);
+            let endPage = Math.min(totalPages, currentPage + 2);
+            
+            // 确保显示至少5个页码（如果总页数允许）
+            if (endPage - startPage < 4) {
+                if (startPage === 1) {
+                    endPage = Math.min(totalPages, startPage + 4);
+                } else if (endPage === totalPages) {
+                    startPage = Math.max(1, endPage - 4);
+                }
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.textContent = i;
+                pageBtn.className = i === currentPage ? 'active' : '';
+                pageBtn.onclick = () => goToPage(i);
+                pageNumbers.appendChild(pageBtn);
+            }
+
+            // 更新页数选择下拉框
+            pageSelect.innerHTML = '';
+            for (let i = 1; i <= totalPages; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = `第 ${i} 页`;
+                if (i === currentPage) {
+                    option.selected = true;
+                }
+                pageSelect.appendChild(option);
+            }
+        }
+
+        function goToPage(page) {
+            const totalPages = Math.ceil(cookies.length / pageSize);
+            if (page >= 1 && page <= totalPages) {
+                currentPage = page;
+                updateUI();
+            }
+        }
+
+        function changePageSize() {
+            const pageSizeSelect = document.getElementById('pageSizeSelect');
+            pageSize = parseInt(pageSizeSelect.value);
+            currentPage = 1; // 重置到第一页
+            updateUI();
         }
 
         async function addCookie() {
@@ -579,27 +770,43 @@
                 return;
             }
 
+            // 并行处理，并发数限制为500
+            const concurrency = 500;
             let successCount = 0;
             let failCount = 0;
             
-            for (const cookieLine of cookieLines) {
-                try {
-                    const response = await fetch('/manager/api/add', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ sso: cookieLine })
-                    });
+            // 分批处理
+            for (let i = 0; i < cookieLines.length; i += concurrency) {
+                const batch = cookieLines.slice(i, i + concurrency);
+                
+                // 并行处理当前批次
+                const promises = batch.map(async (cookieLine) => {
+                    try {
+                        const response = await fetch('/manager/api/add', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ sso: cookieLine })
+                        });
 
-                    if (response.ok) {
+                        return response.ok;
+                    } catch (error) {
+                        return false;
+                    }
+                });
+
+                // 等待当前批次完成
+                const results = await Promise.all(promises);
+                
+                // 统计结果
+                results.forEach(success => {
+                    if (success) {
                         successCount++;
                     } else {
                         failCount++;
                     }
-                } catch (error) {
-                    failCount++;
-                }
+                });
             }
 
             cookieInput.value = '';
@@ -759,6 +966,15 @@
         document.getElementById('copyBaseUrlBtn').addEventListener('click', copyBaseUrl);
         document.getElementById('copyApiKeyBtn').addEventListener('click', copyApiKey);
         document.getElementById('saveApiKeyBtn').addEventListener('click', saveApiKey);
+
+        // 分页事件监听
+        document.getElementById('pageSizeSelect').addEventListener('change', changePageSize);
+        document.getElementById('prevPage').addEventListener('click', () => goToPage(currentPage - 1));
+        document.getElementById('nextPage').addEventListener('click', () => goToPage(currentPage + 1));
+        document.getElementById('pageSelect').addEventListener('change', (e) => {
+            const selectedPage = parseInt(e.target.value);
+            goToPage(selectedPage);
+        });
 
         // 页面加载时获取数据
         initializeTokenManagement();
