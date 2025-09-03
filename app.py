@@ -46,19 +46,37 @@ def get_manager_tokens():
 @app.route('/manager/api/add', methods=['POST'])
 def add_manager_token():
     try:
-        sso = request.json.get('sso')
-        if not sso:
-            return jsonify({"error": "SSO token is required"}), 400
+        data = request.json
         
-        # 如果输入的是完整的cookie字符串，直接使用
-        if 'sso=' in sso and 'sso-rw=' in sso:
-            token_str = sso
-        else:
-            # 如果只是cookie值，构造完整的cookie字符串
-            token_str = f"sso-rw={sso};sso={sso}"
+        # 支持批量添加
+        if 'tokens' in data:
+            # 批量添加模式
+            tokens = data.get('tokens', [])
+            if not tokens:
+                return jsonify({"error": "Tokens list is required"}), 400
             
-        token_manager.add_token(token_str)
-        return jsonify({"success": True})
+            result = token_manager.add_tokens_batch(tokens)
+            return jsonify({
+                "success": True,
+                "added": result["success"],
+                "duplicates": result["duplicates"], 
+                "failed": result["failed"]
+            })
+        else:
+            # 单个添加模式（兼容旧版本）
+            sso = data.get('sso')
+            if not sso:
+                return jsonify({"error": "SSO token is required"}), 400
+            
+            # 如果输入的是完整的cookie字符串，直接使用
+            if 'sso=' in sso and 'sso-rw=' in sso:
+                token_str = sso
+            else:
+                # 如果只是cookie值，构造完整的cookie字符串
+                token_str = f"sso-rw={sso};sso={sso}"
+                
+            token_manager.add_token(token_str)
+            return jsonify({"success": True})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
