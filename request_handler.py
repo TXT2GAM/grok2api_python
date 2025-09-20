@@ -74,17 +74,17 @@ class RequestHandler:
                     if not response_data:
                         continue
                     
-                    # 处理 grok-4 的思考内容
-                    if model == "grok-4":
+                    # 处理 grok-4 和 grok-4-fast 的思考内容
+                    if model in ["grok-4", "grok-4-fast"]:
                         # 收集思考内容 (isThinking: true)
                         if response_data.get("isThinking") and response_data.get("token"):
                             thinking_content += response_data["token"]
-                        
+
                         # 收集最终内容 (isThinking: false, messageTag: "final")
                         elif not response_data.get("isThinking") and response_data.get("messageTag") == "final" and response_data.get("token"):
                             full_content += response_data["token"]
-                    
-                    # 处理 grok-3 和其他模型
+
+                    # 处理 grok-3 和其他非推理模型
                     else:
                         # 获取token并拼接内容
                         token = response_data.get("token", "")
@@ -104,15 +104,15 @@ class RequestHandler:
             
             # 如果有 modelResponse，优先使用它的内容
             if model_response:
-                if model == "grok-4" and model_response.get("thinkingTrace"):
-                    # 对于 grok-4，将思考内容包装在 think 标签中
+                if model in ["grok-4", "grok-4-fast"] and model_response.get("thinkingTrace"):
+                    # 对于推理模型，将思考内容包装在 think 标签中
                     thinking_trace = model_response["thinkingTrace"]
                     final_message = f"<think>{thinking_trace}</think>{model_response.get('message', '')}"
                 else:
                     final_message = model_response.get('message', '')
             else:
                 # 如果没有 modelResponse，手动拼接内容
-                if model == "grok-4" and thinking_content:
+                if model in ["grok-4", "grok-4-fast"] and thinking_content:
                     final_message = f"<think>{thinking_content}</think>{full_content}"
                 else:
                     final_message = full_content
@@ -174,19 +174,19 @@ class RequestHandler:
                     if not response_data:
                         continue
                     
-                    # 处理 grok-4 的特殊流式响应
-                    if model == "grok-4":
+                    # 处理 grok-4 和 grok-4-fast 的特殊流式响应
+                    if model in ["grok-4", "grok-4-fast"]:
                         # 处理思考内容的开始
                         if response_data.get("isThinking") and not thinking_started:
                             thinking_started = True
                             # 发送开始思考标签
                             yield f"data: {json.dumps(MessageProcessor.create_chat_response('<think>', model, True))}\n\n"
-                        
+
                         # 处理思考内容
                         if response_data.get("isThinking") and response_data.get("token"):
                             thinking_content += response_data["token"]
                             yield f"data: {json.dumps(MessageProcessor.create_chat_response(response_data['token'], model, True))}\n\n"
-                        
+
                         # 处理思考结束和最终内容开始
                         elif not response_data.get("isThinking") and thinking_started and response_data.get("messageTag") == "final" and response_data.get("token"):
                             # 发送结束思考标签
@@ -194,12 +194,12 @@ class RequestHandler:
                             thinking_started = False
                             # 发送最终内容
                             yield f"data: {json.dumps(MessageProcessor.create_chat_response(response_data['token'], model, True))}\n\n"
-                        
+
                         # 处理最终内容的后续部分
                         elif not response_data.get("isThinking") and not thinking_started and response_data.get("messageTag") == "final" and response_data.get("token"):
                             yield f"data: {json.dumps(MessageProcessor.create_chat_response(response_data['token'], model, True))}\n\n"
-                    
-                    # 处理 grok-3 和其他模型
+
+                    # 处理 grok-3 和其他非推理模型
                     else:
                         result = MessageProcessor.process_model_response(response_data, model)
                         if result["token"]:

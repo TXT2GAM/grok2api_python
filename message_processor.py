@@ -160,6 +160,36 @@ class MessageProcessor:
                 "isRegenRequest": False
             }
             return grok4_request
+
+        # 为 grok-4-fast 添加特殊字段
+        if model == "grok-4-fast":
+            grok4_fast_request = {
+                **base_request,
+                "modelName": config_manager.get_models()[model],  # 使用实际的模型ID
+                "disableSearch": False,
+                "enableImageGeneration": True,
+                "returnImageBytes": False,
+                "returnRawGrokInXaiRequest": False,
+                "enableImageStreaming": True,
+                "imageGenerationCount": 2,
+                "forceConcise": False,
+                "toolOverrides": {},
+                "enableSideBySide": True,
+                "sendFinalMetadata": True,
+                "isReasoning": False,
+                "webpageUrls": [],
+                "responseMetadata": {
+                    "requestModelDetails": {
+                        "modelId": config_manager.get_models()[model]
+                    }
+                },
+                "disableTextFollowUps": True,
+                "disableMemory": False,
+                "forceSideBySide": False,
+                "modelMode": "MODEL_MODE_GROK_4_MINI_THINKING",
+                "isAsyncChat": False
+            }
+            return grok4_fast_request
         
         return base_request
     
@@ -167,7 +197,7 @@ class MessageProcessor:
     def process_model_response(response, model):
         result = {"token": None}
         
-        if model in ["grok-3", "grok-4"]:
+        if model in ["grok-3", "grok-4", "grok-4-fast"]:
             result["token"] = response.get("token")
         
         return result

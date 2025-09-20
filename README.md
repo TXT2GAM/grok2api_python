@@ -7,9 +7,6 @@
 git clone https://github.com/TXT2GAM/grok2api_python.git
 cd grok2api_python
 
-# 编辑 docker-compose.yml 中的环境变量
-# nano docker-compose.yml
-
 docker build -t grok2api .
 
 docker run -d -p 3003:5200 grok2api
@@ -43,6 +40,13 @@ docker compose down
 docker compose build --no-cache
 docker compose up -d
 ```
+
+---
+
+### 支持模型
+
+`grok-3`, `grok-4`, `grok-4-fast`
+
 
 ---
 

@@ -10,7 +10,8 @@ class ConfigManager:
         return {
             "MODELS": {
                 "grok-3": "grok-3",
-                "grok-4": "grok-4"
+                "grok-4": "grok-4",
+                "grok-4-fast": "grok-4-mini-thinking-tahoe"
             },
             "API": {
                 "IS_TEMP_CONVERSATION": os.environ.get("IS_TEMP_CONVERSATION", "true").lower() == "true",
@@ -49,7 +50,7 @@ class ConfigManager:
         return self.get("MODELS", {})
     
     def is_reasoning_model(self, model):
-        return model == "grok-4"
+        return model in ["grok-4", "grok-4-fast"]
     
     def is_valid_model(self, model):
         return model in self.get_models()
