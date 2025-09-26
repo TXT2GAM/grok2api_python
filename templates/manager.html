@@ -546,6 +546,33 @@
 
         <div class="card">
             <div class="card-header">
+                <h2 class="card-title">日志设置</h2>
+            </div>
+            <div class="card-body">
+                <div class="token-item">
+                    <label for="logLevel">日志级别</label>
+                    <div class="input-group">
+                        <select class="input-field" id="logLevel">
+                            <option value="">加载中...</option>
+                        </select>
+                        <button class="btn btn-primary" id="saveLogLevelBtn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                                <polyline points="17,21 17,13 7,13 7,21"/>
+                                <polyline points="7,3 7,8 15,8"/>
+                            </svg>
+                            应用
+                        </button>
+                    </div>
+                    <p style="font-size: 0.85rem; color: #64748b; margin-top: 0.5rem;">
+                        修改日志级别后立即生效，无需重启服务
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
                 <h2 class="card-title">Cookie 列表</h2>
                 <div class="stats">
                     <span>总数：</span>
@@ -620,6 +647,86 @@
         let cookies = [];
         let currentPage = 1;
         let pageSize = 15;
+        let currentLogLevel = 'INFO';
+        let supportedLogLevels = [];
+
+        async function loadLogSettings() {
+            try {
+                const response = await fetch('/manager/api/log-level');
+                const data = await response.json();
+
+                if (response.ok) {
+                    currentLogLevel = data.current_level;
+                    supportedLogLevels = data.supported_levels;
+
+                    // 更新日志级别下拉框
+                    const logLevelSelect = document.getElementById('logLevel');
+                    logLevelSelect.innerHTML = '';
+
+                    supportedLogLevels.forEach(level => {
+                        const option = document.createElement('option');
+                        option.value = level;
+                        option.textContent = level;
+                        if (level === currentLogLevel) {
+                            option.selected = true;
+                        }
+                        logLevelSelect.appendChild(option);
+                    });
+                } else {
+                    showNotification('加载日志设置失败: ' + data.error, 'error');
+                }
+            } catch (error) {
+                showNotification('加载日志设置失败: ' + error.message, 'error');
+            }
+        }
+
+        async function saveLogLevel() {
+            const logLevelSelect = document.getElementById('logLevel');
+            const newLevel = logLevelSelect.value;
+
+            if (!newLevel) {
+                showNotification('请选择日志级别', 'error');
+                return;
+            }
+
+            if (newLevel === currentLogLevel) {
+                showNotification('日志级别未更改');
+                return;
+            }
+
+            const saveBtn = document.getElementById('saveLogLevelBtn');
+            const originalText = saveBtn.innerHTML;
+            saveBtn.innerHTML = '<div class="loading"></div> 应用中...';
+            saveBtn.disabled = true;
+
+            try {
+                const response = await fetch('/manager/api/log-level', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ level: newLevel })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    currentLogLevel = newLevel;
+                    showNotification(data.message || `日志级别已设置为 ${newLevel}`);
+                } else {
+                    showNotification('设置日志级别失败: ' + data.error, 'error');
+                    // 恢复到原来的值
+                    logLevelSelect.value = currentLogLevel;
+                }
+            } catch (error) {
+                showNotification('设置日志级别失败: ' + error.message, 'error');
+                // 恢复到原来的值
+                logLevelSelect.value = currentLogLevel;
+            } finally {
+                saveBtn.innerHTML = originalText;
+                saveBtn.disabled = false;
+            }
+        }
 
         async function loadCookies() {
             try {
@@ -1092,6 +1199,9 @@
         document.getElementById('copyApiKeyBtn').addEventListener('click', copyApiKey);
         document.getElementById('saveApiKeyBtn').addEventListener('click', saveApiKey);
 
+        // 日志设置事件监听
+        document.getElementById('saveLogLevelBtn').addEventListener('click', saveLogLevel);
+
         // Cookie 导出和清空事件监听
         document.getElementById('exportCookiesBtn').addEventListener('click', exportAllCookies);
         document.getElementById('clearAllCookiesBtn').addEventListener('click', clearAllCookies);
@@ -1107,6 +1217,7 @@
 
         // 页面加载时获取数据
         initializeTokenManagement();
+        loadLogSettings();
         loadCookies();
     </script>
 </body>

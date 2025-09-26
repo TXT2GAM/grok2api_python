@@ -156,8 +156,6 @@ class RequestHandler:
             logger.info("开始处理流式响应", "Server")
             
             stream = response.iter_lines()
-            thinking_started = False
-            thinking_content = ""
             
             for chunk in stream:
                 if not chunk:
@@ -176,27 +174,8 @@ class RequestHandler:
                     
                     # 处理 grok-4 和 grok-4-fast 的特殊流式响应
                     if model in ["grok-4", "grok-4-fast"]:
-                        # 处理思考内容的开始
-                        if response_data.get("isThinking") and not thinking_started:
-                            thinking_started = True
-                            # 发送开始思考标签
-                            yield f"data: {json.dumps(MessageProcessor.create_chat_response('<think>', model, True))}\n\n"
-
-                        # 处理思考内容
-                        if response_data.get("isThinking") and response_data.get("token"):
-                            thinking_content += response_data["token"]
-                            yield f"data: {json.dumps(MessageProcessor.create_chat_response(response_data['token'], model, True))}\n\n"
-
-                        # 处理思考结束和最终内容开始
-                        elif not response_data.get("isThinking") and thinking_started and response_data.get("messageTag") == "final" and response_data.get("token"):
-                            # 发送结束思考标签
-                            yield f"data: {json.dumps(MessageProcessor.create_chat_response('</think>', model, True))}\n\n"
-                            thinking_started = False
-                            # 发送最终内容
-                            yield f"data: {json.dumps(MessageProcessor.create_chat_response(response_data['token'], model, True))}\n\n"
-
-                        # 处理最终内容的后续部分
-                        elif not response_data.get("isThinking") and not thinking_started and response_data.get("messageTag") == "final" and response_data.get("token"):
+                        # 只处理最终内容，完全过滤思考内容
+                        if not response_data.get("isThinking") and response_data.get("messageTag") == "final" and response_data.get("token"):
                             yield f"data: {json.dumps(MessageProcessor.create_chat_response(response_data['token'], model, True))}\n\n"
 
                     # 处理 grok-3 和其他非推理模型
