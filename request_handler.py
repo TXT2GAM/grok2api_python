@@ -154,44 +154,51 @@ class RequestHandler:
     def handle_stream_response(self, response, model):
         def generate():
             logger.info("开始处理流式响应", "Server")
-            
-            stream = response.iter_lines()
-            
-            for chunk in stream:
-                if not chunk:
-                    continue
-                try:
-                    line_json = json.loads(chunk.decode("utf-8").strip())
-                    
-                    if line_json.get("error"):
-                        logger.error(json.dumps(line_json, indent=2), "Server")
-                        yield json.dumps({"error": "RateLimitError"}) + "\n\n"
-                        return
-                        
-                    response_data = line_json.get("result", {}).get("response")
-                    if not response_data:
-                        continue
-                    
-                    # 处理 grok-4 和 grok-4-fast 的特殊流式响应
-                    if model in ["grok-4", "grok-4-fast"]:
-                        # 只处理最终内容，完全过滤思考内容
-                        if not response_data.get("isThinking") and response_data.get("messageTag") == "final" and response_data.get("token"):
-                            yield f"data: {json.dumps(MessageProcessor.create_chat_response(response_data['token'], model, True))}\n\n"
 
-                    # 处理 grok-3 和其他非推理模型
-                    else:
-                        result = MessageProcessor.process_model_response(response_data, model)
-                        if result["token"]:
-                            yield f"data: {json.dumps(MessageProcessor.create_chat_response(result['token'], model, True))}\n\n"
-                        
-                except json.JSONDecodeError:
-                    continue
-                except Exception as e:
-                    logger.error(f"处理流式响应行时出错: {str(e)}", "Server")
-                    continue
-                    
-            yield "data: [DONE]\n\n"
-            
+            try:
+                stream = response.iter_lines()
+
+                for chunk in stream:
+                    if not chunk:
+                        continue
+                    try:
+                        line_json = json.loads(chunk.decode("utf-8").strip())
+
+                        if line_json.get("error"):
+                            logger.error(json.dumps(line_json, indent=2), "Server")
+                            yield f"data: {json.dumps({'error': {'message': 'RateLimitError', 'type': 'rate_limit_error'}})}\n\n"
+                            return
+
+                        response_data = line_json.get("result", {}).get("response")
+                        if not response_data:
+                            continue
+
+                        # 处理 grok-4 和 grok-4-fast 的特殊流式响应
+                        if model in ["grok-4", "grok-4-fast"]:
+                            # 只处理最终内容，完全过滤思考内容
+                            if not response_data.get("isThinking") and response_data.get("messageTag") == "final" and response_data.get("token"):
+                                yield f"data: {json.dumps(MessageProcessor.create_chat_response(response_data['token'], model, True))}\n\n"
+
+                        # 处理 grok-3 和其他非推理模型
+                        else:
+                            result = MessageProcessor.process_model_response(response_data, model)
+                            if result["token"]:
+                                yield f"data: {json.dumps(MessageProcessor.create_chat_response(result['token'], model, True))}\n\n"
+
+                    except json.JSONDecodeError:
+                        continue
+                    except Exception as e:
+                        logger.error(f"处理流式响应行时出错: {str(e)}", "Server")
+                        continue
+
+                yield "data: [DONE]\n\n"
+
+            except Exception as e:
+                logger.error(f"流式响应处理异常: {str(e)}", "Server")
+                # 发送错误响应
+                yield f"data: {json.dumps({'error': {'message': f'Stream processing error: {str(e)}', 'type': 'stream_error'}})}\n\n"
+                yield "data: [DONE]\n\n"
+
         return generate()
 
     def make_grok_request(self, data, model, stream=False):
@@ -217,12 +224,13 @@ class RequestHandler:
                     response = curl_requests.post(
                         f"{config_manager.get('API.BASE_URL')}/rest/app-chat/conversations/new",
                         headers={
-                            **self.default_headers, 
+                            **self.default_headers,
                             "Cookie": token
                         },
                         data=json.dumps(request_payload),
                         impersonate="chrome133a",
                         stream=True,
+                        timeout=10,
                         **proxy_options
                     )
                     
@@ -253,7 +261,13 @@ class RequestHandler:
                         
                 except Exception as e:
                     logger.error(f"请求处理异常: {str(e)}", "Server")
-                    continue
+                    # 检查是否是超时或网络异常，这些通常可以重试
+                    if "timeout" in str(e).lower() or "connection" in str(e).lower():
+                        logger.warning(f"网络异常，继续重试: {str(e)[:100]}", "Server")
+                        continue
+                    else:
+                        # 其他异常直接跳出重试循环
+                        break
             
             if response_status_code == 403:
                 raise ValueError('IP暂时被封无法破盾，请稍后重试或者更换ip')
