@@ -183,8 +183,8 @@ class RequestHandler:
                                 # 发送开始思考标签
                                 yield f"data: {json.dumps(MessageProcessor.create_chat_response('<think>', model, True))}\n\n"
 
-                            # 处理思考过程中的内容（显示给用户，仅在思考阶段）
-                            if response_data.get("isThinking") and response_data.get("token") and not thinking_ended:
+                            # 处理思考过程中的内容（显示给用户，仅在思考阶段，过滤header内容）
+                            if response_data.get("isThinking") and response_data.get("token") and not thinking_ended and response_data.get("messageTag") != "header":
                                 yield f"data: {json.dumps(MessageProcessor.create_chat_response(response_data['token'], model, True))}\n\n"
 
                             # 处理思考结束，准备最终内容（只有当有实际的最终内容时才结束思考）
