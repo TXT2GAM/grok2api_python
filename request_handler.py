@@ -187,15 +187,13 @@ class RequestHandler:
                             if response_data.get("isThinking") and response_data.get("token") and not thinking_ended:
                                 yield f"data: {json.dumps(MessageProcessor.create_chat_response(response_data['token'], model, True))}\n\n"
 
-                            # 处理思考结束，准备最终内容
-                            elif not response_data.get("isThinking") and thinking_started and not thinking_ended:
+                            # 处理思考结束，准备最终内容（只有当有实际的最终内容时才结束思考）
+                            elif not response_data.get("isThinking") and thinking_started and not thinking_ended and response_data.get("messageTag") == "final" and response_data.get("token"):
                                 thinking_ended = True
                                 # 发送结束思考标签
                                 yield f"data: {json.dumps(MessageProcessor.create_chat_response('</think>', model, True))}\n\n"
-
-                                # 如果同时有最终内容的token，也发送出去
-                                if response_data.get("messageTag") == "final" and response_data.get("token"):
-                                    yield f"data: {json.dumps(MessageProcessor.create_chat_response(response_data['token'], model, True))}\n\n"
+                                # 发送最终内容的token
+                                yield f"data: {json.dumps(MessageProcessor.create_chat_response(response_data['token'], model, True))}\n\n"
 
                             # 处理最终内容的后续部分（思考结束后的纯回复）
                             elif not response_data.get("isThinking") and thinking_ended and response_data.get("messageTag") == "final" and response_data.get("token"):
