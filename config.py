@@ -31,7 +31,7 @@ class ConfigManager:
                 "MAX_ATTEMPTS": 2
             },
             "LOGGING": {
-                "LOG_LEVEL": os.environ.get("LOG_LEVEL", "INFO").upper(),
+                "LOG_LEVEL": os.environ.get("LOG_LEVEL", "ERROR").upper(),
                 "SUPPORTED_LEVELS": ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
             },
         }
