@@ -66,7 +66,8 @@ class MessageProcessor:
         matches = re.findall(cdata_pattern, text, re.DOTALL)
 
         if matches:
-            return '\n'.join(matches)
+            # 如果找到CDATA内容，前后加换行符，多个内容用换行分隔
+            return '\n' + '\n'.join(matches) + '\n'
 
         if '<xai:tool_usage_card>' in text:
             return ''
