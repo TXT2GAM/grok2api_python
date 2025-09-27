@@ -62,17 +62,20 @@ class MessageProcessor:
         if not isinstance(text, str):
             return text
 
+        # 移除 grok:render 标签及内容
+        text = re.sub(r'<grok:render[^>]*>.*?</grok:render>', '', text, flags=re.DOTALL)
+
+        # 仅保留CDATA参数
         cdata_pattern = r'!\[CDATA\[(.*?)\]\]'
         matches = re.findall(cdata_pattern, text, re.DOTALL)
 
         if matches:
-            # 如果找到CDATA内容，前后加换行符，多个内容用换行分隔
+            # CDATA参数用换行分隔
             return '\n' + '\n'.join(matches) + '\n'
 
         if '<xai:tool_usage_card>' in text:
             return ''
 
-        # 其他内容正常返回
         return text
 
     @staticmethod
