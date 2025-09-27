@@ -57,6 +57,24 @@ class MessageProcessor:
         return text
 
     @staticmethod
+    def filter_tool_usage_content(text):
+        """过滤工具使用卡片内容，只保留CDATA部分"""
+        if not isinstance(text, str):
+            return text
+
+        cdata_pattern = r'!\[CDATA\[(.*?)\]\]'
+        matches = re.findall(cdata_pattern, text, re.DOTALL)
+
+        if matches:
+            return '\n'.join(matches)
+
+        if '<xai:tool_usage_card>' in text:
+            return ''
+
+        # 其他内容正常返回
+        return text
+
+    @staticmethod
     def process_content(content):
         if isinstance(content, list):
             text_content = ''
@@ -165,7 +183,7 @@ class MessageProcessor:
         if model == "grok-4-fast":
             grok4_fast_request = {
                 **base_request,
-                "modelName": config_manager.get_models()[model],  # 使用实际的模型ID
+                "modelName": config_manager.get_models()[model],
                 "disableSearch": False,
                 "enableImageGeneration": True,
                 "returnImageBytes": False,
