@@ -184,27 +184,27 @@ class RequestHandler:
                                 yield f"data: {json.dumps(MessageProcessor.create_chat_response('<think>', model, True))}\n\n"
 
                             # 处理思考过程中的内容（显示给用户，仅在思考阶段，过滤header内容和工具使用标签）
-                            if response_data.get("isThinking") and response_data.get("token") and not thinking_ended and response_data.get("messageTag") != "header":
-                                # 过滤工具使用内容，只保留CDATA部分
-                                filtered_token = MessageProcessor.filter_tool_usage_content(response_data["token"])
-                                if filtered_token:  # 只输出非空内容
-                                    yield f"data: {json.dumps(MessageProcessor.create_chat_response(filtered_token, model, True))}\n\n"
+                            if response_data.get("isThinking") and not thinking_ended and response_data.get("messageTag") != "header":
+                                # 处理工具响应内容，包括web搜索结果
+                                filtered_content = MessageProcessor.process_tool_response(response_data)
+                                if filtered_content:  # 只输出非空内容
+                                    yield f"data: {json.dumps(MessageProcessor.create_chat_response(filtered_content, model, True))}\n\n"
 
                             # 处理思考结束，准备最终内容（只有当有实际的最终内容时才结束思考）
                             elif not response_data.get("isThinking") and thinking_started and not thinking_ended and response_data.get("messageTag") == "final" and response_data.get("token"):
                                 thinking_ended = True
                                 # 发送结束思考标签
                                 yield f"data: {json.dumps(MessageProcessor.create_chat_response('</think>', model, True))}\n\n"
-                                # 过滤工具使用内容，发送最终内容的token
-                                filtered_token = MessageProcessor.filter_tool_usage_content(response_data["token"])
-                                if filtered_token:
-                                    yield f"data: {json.dumps(MessageProcessor.create_chat_response(filtered_token, model, True))}\n\n"
+                                # 处理工具响应内容，发送最终内容
+                                filtered_content = MessageProcessor.process_tool_response(response_data)
+                                if filtered_content:
+                                    yield f"data: {json.dumps(MessageProcessor.create_chat_response(filtered_content, model, True))}\n\n"
 
                             # 处理最终内容的后续部分（思考结束后的纯回复）
-                            elif not response_data.get("isThinking") and thinking_ended and response_data.get("messageTag") == "final" and response_data.get("token"):
-                                filtered_token = MessageProcessor.filter_tool_usage_content(response_data["token"])
-                                if filtered_token:
-                                    yield f"data: {json.dumps(MessageProcessor.create_chat_response(filtered_token, model, True))}\n\n"
+                            elif not response_data.get("isThinking") and thinking_ended and response_data.get("messageTag") == "final":
+                                filtered_content = MessageProcessor.process_tool_response(response_data)
+                                if filtered_content:
+                                    yield f"data: {json.dumps(MessageProcessor.create_chat_response(filtered_content, model, True))}\n\n"
 
                         # 处理 grok-3 和其他非推理模型
                         else:
