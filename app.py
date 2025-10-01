@@ -2,6 +2,7 @@ import os
 import time
 import json
 import secrets
+from functools import wraps
 from flask import Flask, request, Response, jsonify, render_template, redirect, session
 from werkzeug.middleware.proxy_fix import ProxyFix
 
@@ -19,6 +20,29 @@ token_manager = AuthTokenManager()
 request_handler = RequestHandler(token_manager)
 
 
+def admin_required(f):
+    """管理员鉴权装饰器"""
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        # 检查session中是否有有效的管理员身份验证
+        if session.get('admin_authenticated'):
+            return f(*args, **kwargs)
+
+        # 检查请求头中的管理员密钥
+        admin_key = request.headers.get('X-Admin-Key')
+        if admin_key and admin_key == config_manager.get("ADMIN.ADMIN_KEY"):
+            session['admin_authenticated'] = True
+            return f(*args, **kwargs)
+
+        # 如果是AJAX请求，返回JSON错误
+        if request.headers.get('Content-Type') == 'application/json' or request.is_json:
+            return jsonify({"error": "Unauthorized access", "redirect": "/manager/login"}), 401
+
+        # 否则重定向到登录页面
+        return redirect('/manager/login')
+    return decorated_function
+
+
 def initialization():
     token_manager.load_from_env()
     
@@ -30,20 +54,49 @@ def initialization():
 
 @app.route('/manager/login', methods=['GET', 'POST'])
 def manager_login():
-    return redirect('/manager')
+    if request.method == 'POST':
+        admin_key = request.json.get('admin_key') if request.is_json else request.form.get('admin_key')
+
+        if admin_key and admin_key == config_manager.get("ADMIN.ADMIN_KEY"):
+            session['admin_authenticated'] = True
+            if request.is_json:
+                return jsonify({"success": True, "redirect": "/manager"})
+            else:
+                return redirect('/manager')
+        else:
+            if request.is_json:
+                return jsonify({"error": "Invalid admin key"}), 401
+            else:
+                return render_template('login.html', error="Invalid admin key")
+
+    # GET请求，如果已经认证则直接跳转到管理页面
+    if session.get('admin_authenticated'):
+        return redirect('/manager')
+
+    return render_template('login.html')
+
+
+@app.route('/manager/logout', methods=['POST'])
+@admin_required
+def manager_logout():
+    session.pop('admin_authenticated', None)
+    return jsonify({"success": True, "redirect": "/manager/login"})
 
 
 @app.route('/manager')
+@admin_required
 def manager():
     return render_template('manager.html')
 
 
 @app.route('/manager/api/get')
+@admin_required
 def get_manager_tokens():
     return jsonify(token_manager.get_token_status_map())
 
 
 @app.route('/manager/api/add', methods=['POST'])
+@admin_required
 def add_manager_token():
     try:
         data = request.json
@@ -82,6 +135,7 @@ def add_manager_token():
 
 
 @app.route('/manager/api/delete', methods=['POST'])
+@admin_required
 def delete_manager_token():
     try:
         sso = request.json.get('sso')
@@ -96,6 +150,7 @@ def delete_manager_token():
 
 
 @app.route('/manager/api/log-level', methods=['GET'])
+@admin_required
 def get_log_level():
     """获取当前日志级别"""
     try:
@@ -110,6 +165,7 @@ def get_log_level():
 
 
 @app.route('/manager/api/log-level', methods=['POST'])
+@admin_required
 def set_log_level():
     """设置日志级别"""
     try:
@@ -140,6 +196,7 @@ def set_log_level():
 
 
 @app.route('/manager/api/test', methods=['POST'])
+@admin_required
 def test_manager_token():
     try:
         cookie = request.json.get('cookie')

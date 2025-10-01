@@ -2,76 +2,320 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>登录</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GrokAPI 管理员登录</title>
     <style>
-        :root {
-            --bg-primary: #f4f6f9;
-            --card-bg: #ffffff;
-            --text-primary: #2c3e50;
-            --text-secondary: #6c757d;
-            --border-color: #e2e8f0;
-            --primary-color: #3498db;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #334155;
+            line-height: 1.6;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
+            padding: 2rem;
         }
-        .login-form {
-            background: var(--card-bg);
-            padding: 40px;
+
+        .login-container {
+            background: white;
             border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
             width: 100%;
             max-width: 400px;
+            padding: 2.5rem;
         }
-        h2 {
+
+        .login-header {
             text-align: center;
-            margin-bottom: 20px;
-            color: var(--text-primary);
+            margin-bottom: 2rem;
         }
-        input {
+
+        .login-header h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-header p {
+            color: #64748b;
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #374151;
+            font-size: 0.9rem;
+        }
+
+        .form-input {
             width: 100%;
-            padding: 12px 15px;
-            margin: 10px 0;
-            border: 1px solid var(--border-color);
+            padding: 0.875rem 1rem;
+            border: 1px solid #d1d5db;
             border-radius: 8px;
-            font-size: 16px;
+            font-size: 1rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            background: #f9fafb;
         }
-        button {
+
+        .form-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            background: white;
+        }
+
+        .login-btn {
             width: 100%;
-            padding: 12px;
-            background-color: var(--primary-color);
+            padding: 0.875rem 1rem;
+            background: #3b82f6;
             color: white;
             border: none;
             border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
         }
-        button:hover { background-color: #2980b9; }
+
+        .login-btn:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        .login-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid #ffffff40;
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .error-message {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .success-message {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e5e7eb;
+            color: #64748b;
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 1rem;
+            }
+
+            .login-container {
+                padding: 2rem;
+            }
+
+            .login-header h1 {
+                font-size: 1.5rem;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="login-form">
-        <h2>管理员登录</h2>
-        <form action="/manager/login" method="post">
-            <input type="password" name="password" placeholder="输入管理员密码" required>
-            <button type="submit">登录</button>
+    <div class="login-container">
+        <div class="login-header">
+            <h1>管理员登录</h1>
+            <p>请输入管理员密钥以访问管理面板</p>
+        </div>
+
+        {% if error %}
+        <div class="error-message">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="15" y1="9" x2="9" y2="15"/>
+                <line x1="9" y1="9" x2="15" y2="15"/>
+            </svg>
+            {{ error }}
+        </div>
+        {% endif %}
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="admin_key">管理员密钥</label>
+                <input
+                    type="password"
+                    id="admin_key"
+                    name="admin_key"
+                    class="form-input"
+                    placeholder="请输入管理员密钥"
+                    required
+                    autocomplete="current-password"
+                >
+            </div>
+
+            <button type="submit" id="loginBtn" class="login-btn">
+                <svg id="loginIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+                    <polyline points="10,17 15,12 10,7"/>
+                   x1="15" y1="12" x2="3" y2="12"/>
+                </svg>
+                <span id="loginText">登录</span>
+            </button>
         </form>
+
+        <div class="footer">
+            <p>GrokAPI 管理面板 - 安全登录</p>
+        </div>
     </div>
-    {% if error %}
-    <div id="notification" style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background-color: #f44336; color: white; padding: 10px 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); display: block; z-index: 1000;">密码错误</div>
+
     <script>
-        setTimeout(() => {
-            document.getElementById('notification').style.display = 'none';
-        }, 2000);
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const adminKey = document.getElementById('admin_key').value.trim();
+            const loginBtn = document.getElementById('loginBtn');
+            const loginIcon = document.getElementById('loginIcon');
+            const loginText = document.getElementById('loginText');
+
+            if (!adminKey) {
+                showError('请输入管理员密钥');
+                return;
+            }
+
+            // 显示加载状态
+            loginBtn.disabled = true;
+            loginIcon.style.display = 'none';
+            loginText.textContent = '登录中...';
+
+            const loadingSpinner = document.createElement('div');
+            loadingSpinner.className = 'loading';
+            loginBtn.insertBefore(loadingSpinner, loginText);
+
+            try {
+                const response = await fetch('/manager/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ admin_key: adminKey })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    // 登录成功，显示成功消息并跳转
+                    showSuccess('登录成功，正在跳转...');
+                    setTimeout(() => {
+                        window.location.href = data.redirect || '/manager';
+                    }, 1000);
+                } else {
+                    showError(data.error || '登录失败，请检查管理员密钥');
+                }
+            } catch (error) {
+                showError('网络错误，请稍后重试');
+            } finally {
+                // 恢复按钮状态
+                loginBtn.disabled = false;
+                loadingSpinner.remove();
+                loginIcon.style.display = 'block';
+                loginText.textContent = '登录';
+            }
+        });
+
+        function showError(message) {
+            removeMessages();
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.innerHTML = `
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="15" y1="9" x2="9" y2="15"/>
+                    <line x1="9" y1="9" x2="15" y2="15"/>
+                </svg>
+                ${message}
+            `;
+            document.querySelector('.login-header').after(errorDiv);
+
+            setTimeout(() => {
+                errorDiv.remove();
+            }, 5000);
+        }
+
+        function showSuccess(message) {
+            removeMessages();
+            const successDiv = document.createElement('div');
+            successDiv.className = 'success-message';
+            successDiv.innerHTML = `
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="20,6 9,17 4,12"/>
+                </svg>
+                ${message}
+            `;
+            document.querySelector('.login-header').after(successDiv);
+        }
+
+        function removeMessages() {
+            const existingMessages = document.querySelectorAll('.error-message, .success-message');
+            existingMessages.forEach(msg => msg.remove());
+        }
+
+        // 监听Enter键
+        document.getElementById('admin_key').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                document.getElementById('loginForm').dispatchEvent(new Event('submit'));
+            }
+        });
     </script>
-    {% endif %}
 </body>
 </html>

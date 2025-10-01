@@ -21,7 +21,9 @@ class ConfigManager:
                 "RETRY_TIME": 1000,
                 "PROXY": os.environ.get("PROXY") or None
             },
-            "ADMIN": {},
+            "ADMIN": {
+                "ADMIN_KEY": os.environ.get("ADMIN_KEY", "admin123")
+            },
             "SERVER": {
                 "COOKIE": None,
                 "PORT": int(os.environ.get("PORT", 5200))
